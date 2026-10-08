@@ -45,23 +45,89 @@
     </header>
 
     <main>
-        <!-- HOME / HERO SECTION -->
-        <section id="home" class="py-24 text-center">
-            <div class="container mx-auto px-6 max-w-4xl">
-                <span class="inline-block bg-[#E6DCCF] text-[#4A3525] text-xs font-bold tracking-widest px-4 py-1.5 rounded-full uppercase mb-4">
-                    Selamat Datang
-                </span>
-                <h1 class="text-4xl md:text-6xl font-bold font-serif-custom text-stone-900 mb-6">
-                    Kopi Ruang Kita
-                </h1>
-                <p class="text-stone-600 text-lg max-w-xl mx-auto mb-8">
-                    Tempat paling nyaman untuk menikmati secangkir kopi hangat dan merangkai cerita bersama.
-                </p>
-                <a href="#menu" class="inline-block bg-[#5C4033] hover:bg-[#4A3525] text-white font-semibold px-8 py-3.5 rounded-full shadow-md transition">
-                    Lihat Menu
-                </a>
+            <!-- HOME / HERO SECTION -->
+        <section id="home" class="min-h-screen flex items-center bg-[#FAF7F2]">
+            <div class="container mx-auto px-6 py-16">
+                <div class="grid md:grid-cols-2 gap-10 items-center">
+
+                    <!-- Teks Hero -->
+                    <div>
+                        <span class="inline-block bg-[#E6DCCF] text-[#4A3525] text-xs font-bold tracking-widest px-4 py-2 rounded-full uppercase mb-5">
+                            Selamat Datang di Kopi Ruang Kita
+                        </span>
+
+                        <h1 class="text-4xl md:text-6xl font-bold font-serif-custom text-stone-900 leading-tight mb-6">
+                            Secangkir Kopi,
+                            <span class="text-[#8B5E3C]">Seribu Cerita.</span>
+                        </h1>
+
+                        <p class="text-stone-600 text-lg leading-relaxed mb-8 max-w-lg">
+                            Nikmati kopi pilihan dengan suasana nyaman untuk
+                            berkumpul, bekerja, dan berbagi cerita bersama orang-orang
+                            tersayang.
+                        </p>
+
+                        <a href="#menu"
+                        class="inline-block bg-[#5C4033] hover:bg-[#4A3525] text-white font-semibold px-8 py-3.5 rounded-full shadow-md transition">
+                            Lihat Menu
+                        </a>
+                    </div>
+
+                    <!-- Gambar Hero -->
+                    <div class="flex justify-center">
+                        <img
+                            src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80"
+                            alt="Secangkir kopi"
+                            class="w-full max-w-lg h-[450px] object-cover rounded-3xl shadow-xl"
+                        >
+                    </div>
+
+                </div>
             </div>
         </section>
+
+        <!-- TENTANG KAMI -->
+<section id="tentang" class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+
+            <!-- Gambar -->
+            <div>
+                <img
+                    src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=900&q=80"
+                    alt="Suasana Kopi Ruang Kita"
+                    class="w-full h-[400px] object-cover rounded-3xl shadow-lg"
+                >
+            </div>
+
+            <!-- Teks -->
+            <div>
+                <span class="text-[#8B5E3C] font-semibold tracking-widest uppercase text-sm">
+                    Tentang Kami
+                </span>
+
+                <h2 class="text-3xl md:text-4xl font-bold font-serif-custom text-stone-900 mt-3 mb-5">
+                    Tempat untuk Kopi dan Cerita
+                </h2>
+
+                <p class="text-stone-600 leading-relaxed mb-4">
+                    Kopi Ruang Kita adalah tempat yang nyaman untuk menikmati
+                    kopi berkualitas sambil berbagi cerita bersama teman,
+                    keluarga, maupun orang-orang terdekat.
+                </p>
+
+                <p class="text-stone-600 leading-relaxed">
+                    Kami percaya bahwa secangkir kopi bukan hanya tentang rasa,
+                    tetapi juga tentang menciptakan suasana dan kenangan yang
+                    menyenangkan.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
     </main>
 
     <!-- 11. FOOTER -->
