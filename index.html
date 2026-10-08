@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kopi Ruang Kita</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-serif-custom { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-[#FAF7F2] text-stone-800">
+
+    <!-- 1. NAVBAR (Cokelat Tua Elegan dengan Tombol Pesan Sekarang) -->
+    <header class="bg-[#3D2C1E] text-white sticky top-0 z-50 shadow-md">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo & Ikon -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-xl shadow-inner">
+                    ☕
+                </div>
+                <span class="text-2xl font-bold font-serif-custom tracking-wide text-white">Kopi Ruang Kita</span>
+            </div>
+
+            <!-- Menu Links -->
+            <div class="hidden md:flex items-center space-x-8 font-medium text-stone-200">
+                <a href="#home" class="hover:text-amber-400 transition">Home</a>
+                <a href="#tentang" class="hover:text-amber-400 transition">Tentang Kami</a>
+                <a href="#menu" class="hover:text-amber-400 transition">Menu</a>
+                <a href="#promo" class="hover:text-amber-400 transition">Promo</a>
+                <a href="#kontak" class="hover:text-amber-400 transition">Kontak</a>
+            </div>
+
+            <!-- Tombol Pesan Sekarang -->
+            <div class="hidden md:block">
+                <a href="#menu" class="bg-[#D4A373] hover:bg-[#C59263] text-stone-900 font-bold px-6 py-2.5 rounded-full shadow transition text-sm">
+                    Pesan Sekarang
+                </a>
+            </div>
+
+            <button class="md:hidden text-2xl text-amber-400">☰</button>
+        </nav>
+    </header>
+
+    <main>
+        <!-- HOME / HERO SECTION -->
+        <section id="home" class="py-24 text-center">
+            <div class="container mx-auto px-6 max-w-4xl">
+                <span class="inline-block bg-[#E6DCCF] text-[#4A3525] text-xs font-bold tracking-widest px-4 py-1.5 rounded-full uppercase mb-4">
+                    Selamat Datang
+                </span>
+                <h1 class="text-4xl md:text-6xl font-bold font-serif-custom text-stone-900 mb-6">
+                    Kopi Ruang Kita
+                </h1>
+                <p class="text-stone-600 text-lg max-w-xl mx-auto mb-8">
+                    Tempat paling nyaman untuk menikmati secangkir kopi hangat dan merangkai cerita bersama.
+                </p>
+                <a href="#menu" class="inline-block bg-[#5C4033] hover:bg-[#4A3525] text-white font-semibold px-8 py-3.5 rounded-full shadow-md transition">
+                    Lihat Menu
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- 11. FOOTER -->
+    <footer class="bg-[#3D2C1E] text-stone-300 py-12 border-t border-stone-800">
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h3 class="text-2xl font-bold font-serif-custom mb-4 text-amber-400">Kopi Ruang Kita</h3>
+                <p class="text-sm text-stone-400 leading-relaxed">Menyajikan secangkir kopi dengan seribu cerita. Tempat terbaik untuk menemukan inspirasi dan ketenangan.</p>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold mb-4 text-white">Informasi & Lokasi</h3>
+                <ul class="space-y-2 text-sm text-stone-400">
+                    <li>📍 Jl. Dr. Mansyur No. 12, Medan</li>
+                    <li>🕒 Buka Setiap Hari: 08.00 - 22.00 WIB</li>
+                    <li>📞 0812-3456-7890</li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold mb-4 text-white">Media Sosial</h3>
+                <div class="flex space-x-3">
+                    <a href="#" class="w-10 h-10 rounded-lg bg-stone-800 text-amber-400 flex items-center justify-center hover:bg-amber-500 hover:text-stone-900 transition font-bold">IG</a>
+                    <a href="#" class="w-10 h-10 rounded-lg bg-stone-800 text-amber-400 flex items-center justify-center hover:bg-amber-500 hover:text-stone-900 transition font-bold">TT</a>
+                    <a href="#" class="w-10 h-10 rounded-lg bg-stone-800 text-amber-400 flex items-center justify-center hover:bg-amber-500 hover:text-stone-900 transition font-bold">FB</a>
+                </div>
+            </div>
+        </div>
+        <div class="container mx-auto px-6 text-center mt-12 pt-6 border-t border-stone-700/60 text-stone-400 text-xs">
+            &copy; 2026 Kopi Ruang Kita. All rights reserved.
+        </div>
+    </footer>
+
+</body>
+</html>
