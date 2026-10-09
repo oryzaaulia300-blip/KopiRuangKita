@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
 <head>
@@ -21,7 +20,7 @@
     </style>
 </head>
 
-<body class="bg-white text-gray-700">
+<body class="bg-white text-gray-700 relative pb-24">
 
     <!-- NAVBAR -->
     <header class="bg-white text-[#4A3728] sticky top-0 z-50 shadow-sm border-b border-[#E9DDCD]">
@@ -47,9 +46,24 @@
                 <a href="#kontak" class="hover:text-[#765640] transition">Kontak</a>
             </div>
 
-            <!-- Tombol Pesan Sekarang -->
-            <div class="hidden md:block">
-                <a href="#menu" class="bg-[#765640] hover:bg-[#60432F] text-white font-semibold px-6 py-2.5 rounded-full transition text-sm">
+            <!-- Fitur Role & Tombol Aksi -->
+            <div class="hidden md:flex items-center gap-4">
+                
+                <!-- Tombol Aksi & Login Minimalis -->
+            <div class="hidden md:flex items-center gap-4">
+                
+                <!-- Tombol Dashboard Kasir (Hanya tampil jika sudah login sebagai Kasir/Owner) -->
+                <button id="btnDashboard" onclick="openReport()" class="hidden text-[#765640] hover:text-[#4A3728] font-bold text-sm transition flex items-center gap-1.5 px-3 py-2 rounded-lg hover:bg-[#F8F1E7]">
+                    ⚙️ Dashboard
+                </button>
+
+                <!-- Tombol Login Minimalis -->
+                <button onclick="openLoginModal()" class="text-[#765640] hover:text-[#4A3728] font-medium text-sm transition flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[#E9DDCD] hover:bg-[#F8F1E7]">
+                    🔒 <span id="loginStatusText">Login</span>
+                </button>
+                
+                <!-- Tombol Pesan Sekarang -->
+                <a href="#menu" class="bg-[#765640] hover:bg-[#60432F] text-white font-semibold px-6 py-2.5 rounded-full transition text-sm shadow-sm">
                     Pesan Sekarang
                 </a>
             </div>
@@ -141,7 +155,89 @@
             </div>
         </section>
 
+     <!-- Tambahkan section menu disini  -->
+
     </main>
+
+    <!-- MODAL CHECKOUT -->
+    <div id="checkoutModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6 m-4 relative">
+            <button onclick="closeModal('checkoutModal')" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 font-bold text-xl">X</button>
+            <h3 class="text-2xl font-bold text-[#4A3728] mb-4 font-serif-custom">Form Pemesanan</h3>
+            <form id="checkoutForm" onsubmit="processCheckout(event)">
+                <div class="mb-3">
+                    <label class="block text-sm text-[#5F5146] mb-1">Nama Pelanggan</label>
+                    <input type="text" id="custName" required class="w-full px-4 py-2 border border-[#E9DDCD] rounded-lg focus:outline-none focus:border-[#765640]">
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm text-[#5F5146] mb-1">Tipe Pesanan</label>
+                    <select id="orderType" class="w-full px-4 py-2 border border-[#E9DDCD] rounded-lg focus:outline-none focus:border-[#765640]">
+                        <option value="Dine-In">Dine-In</option>
+                        <option value="Takeaway">Takeaway</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-[#765640] hover:bg-[#60432F] text-white font-bold py-3 rounded-xl mt-4 transition">Buat Pesanan & Bayar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL QRIS -->
+    <div id="qrisModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-2xl w-full max-w-sm p-6 m-4 text-center relative">
+            <h3 class="text-xl font-bold text-[#4A3728] mb-2 font-serif-custom">Scan QRIS</h3>
+            <p class="text-sm text-gray-500 mb-4">Silakan scan kode QR di bawah ini.</p>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="QRIS" class="w-48 h-48 mx-auto mb-4 border p-2 rounded-xl shadow-sm">
+            <p class="text-2xl font-bold text-[#765640] mb-4" id="qrisTotal">Rp 0</p>
+            <button onclick="finishPayment()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition">Simulasi: Pembayaran Berhasil</button>
+        </div>
+    </div>
+
+    <!-- MODAL STRUK DIGITAL -->
+    <div id="strukModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white w-full max-w-sm p-6 m-4 relative border-t-8 border-[#765640] shadow-2xl">
+            <h3 class="text-xl font-bold text-[#4A3728] text-center font-serif-custom">Kopi Ruang Kita</h3>
+            <p class="text-xs text-center text-gray-500 mb-4">Jl. Dr. Mansyur No. 12, Medan</p>
+            <hr class="border-dashed border-gray-400 mb-4">
+            <div class="text-sm mb-4 text-gray-700" id="strukDetails">
+                <!-- Detail pesanan diisi via JS -->
+            </div>
+            <button onclick="closeAllAndReset()" class="w-full bg-[#765640] hover:bg-[#60432F] text-white font-bold py-2 rounded-xl transition mt-2">Tutup & Selesai</button>
+        </div>
+    </div>
+
+    <!-- MODAL SALES REPORT (DASHBOARD OWNER/KASIR) -->
+    <div id="reportModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-2xl w-full max-w-2xl p-6 m-4 relative max-h-[80vh] overflow-y-auto">
+            <button onclick="closeModal('reportModal')" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 font-bold text-xl">X</button>
+            <h3 class="text-2xl font-bold text-[#4A3728] mb-4 font-serif-custom">Laporan Penjualan (Kasir)</h3>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-[#F8F1E7] p-4 rounded-xl border border-[#E9DDCD]">
+                    <p class="text-sm text-[#5F5146]">Total Transaksi</p>
+                    <p class="text-2xl font-bold text-[#765640]" id="reportTotalTrx">0</p>
+                </div>
+                <div class="bg-[#F8F1E7] p-4 rounded-xl border border-[#E9DDCD]">
+                    <p class="text-sm text-[#5F5146]">Total Omzet Pendapatan</p>
+                    <p class="text-2xl font-bold text-[#765640]" id="reportTotalOmzet">Rp 0</p>
+                </div>
+            </div>
+            <h4 class="font-bold text-[#4A3728] mb-2">Riwayat Transaksi</h4>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left border-collapse">
+                    <thead class="bg-[#F8F1E7] text-[#5F5146]">
+                        <tr>
+                            <th class="p-3 border border-[#E9DDCD]">Kode Pesanan</th>
+                            <th class="p-3 border border-[#E9DDCD]">Pelanggan</th>
+                            <th class="p-3 border border-[#E9DDCD]">Kasir</th>
+                            <th class="p-3 border border-[#E9DDCD]">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportTableBody">
+                        <!-- Data masuk otomatis dari JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
     <!-- FOOTER -->
     <footer id="kontak" class="bg-[#F8F1E7] text-[#5F5146] py-12 border-t border-[#E9DDCD]">
@@ -193,6 +289,104 @@
             &copy; 2026 Kopi Ruang Kita. All rights reserved.
         </div>
     </footer>
+
+    <!-- LOGIKA JAVASCRIPT UNTUK MENU & KASIR -->
+    <script>
+        const menuData = [
+            { id: 1, name: 'Kopi Susu Gula Aren', category: 'Coffee', price: 18000, img: 'https://images.unsplash.com/photo-1599305090598-fe179d501227?w=500&q=80' },
+            { id: 2, name: 'Americano', category: 'Coffee', price: 15000, img: 'https://images.unsplash.com/photo-1551030173-122aabc4489c?w=500&q=80' },
+            { id: 3, name: 'Cafe Latte', category: 'Coffee', price: 22000, img: 'https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?w=500&q=80' },
+            { id: 4, name: 'Caramel Macchiato', category: 'Coffee', price: 25000, img: 'https://images.unsplash.com/photo-1485808191679-5f86510681a2?w=500&q=80' },
+            { id: 5, name: 'Matcha Latte', category: 'Non-Coffee', price: 22000, img: 'https://images.unsplash.com/photo-1515823662972-da6a2e4d3002?w=500&q=80' },
+            { id: 6, name: 'Taro Latte', category: 'Non-Coffee', price: 20000, img: 'https://images.unsplash.com/photo-1626074961596-f94dd706b45a?w=500&q=80' },
+            { id: 7, name: 'Red Velvet Latte', category: 'Non-Coffee', price: 22000, img: 'https://images.unsplash.com/photo-1611162458324-aae1eb4129a4?w=500&q=80' },
+            { id: 8, name: 'Lychee Tea', category: 'Non-Coffee', price: 18000, img: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500&q=80' },
+            { id: 9, name: 'French Fries', category: 'Snack', price: 15000, img: 'https://images.unsplash.com/photo-1576107232684-1279f390859f?w=500&q=80' },
+            { id: 10, name: 'Roti Bakar Coklat', category: 'Snack', price: 16000, img: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&q=80' },
+            { id: 11, name: 'Pisang Goreng Keju', category: 'Snack', price: 15000, img: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=500&q=80' },
+            { id: 12, name: 'Dimsum Ayam', category: 'Snack', price: 18000, img: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=500&q=80' }
+        ];
+
+        let cart = {};
+
+        function renderMenu(items) {
+            const menuGrid = document.getElementById('menuGrid');
+            menuGrid.innerHTML = '';
+            
+            if (items.length === 0) {
+                menuGrid.innerHTML = '<p class="col-span-full text-center text-gray-500 py-10">Menu tidak ditemukan.</p>';
+                return;
+            }
+
+            items.forEach(item => {
+                const count = cart[item.id] || 0;
+                menuGrid.innerHTML += `
+                    <div class="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition border border-[#E9DDCD] flex flex-col h-full">
+                        <img src="${item.img}" alt="${item.name}" class="w-full h-40 object-cover rounded-xl mb-4">
+                        <div class="flex-grow">
+                            <span class="text-xs font-bold text-[#765640] uppercase tracking-wider">${item.category}</span>
+                            <h3 class="font-bold text-[#4A3728] text-lg mt-1 mb-2">${item.name}</h3>
+                            <p class="font-semibold text-gray-700">Rp ${item.price.toLocaleString('id-ID')}</p>
+                        </div>
+                        <div class="mt-4 flex items-center justify-between border-t border-[#E9DDCD] pt-4">
+                            <button onclick="updateCart(${item.id}, -1)" class="w-8 h-8 rounded-full bg-[#F8F1E7] text-[#765640] font-bold hover:bg-[#E9DDCD]">-</button>
+                            <span class="font-bold text-[#4A3728] w-8 text-center" id="qty-${item.id}">${count}</span>
+                            <button onclick="updateCart(${item.id}, 1)" class="w-8 h-8 rounded-full bg-[#765640] text-white font-bold hover:bg-[#60432F]">+</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filterMenu(category) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.className = 'filter-btn bg-white text-[#765640] border border-[#765640] px-5 py-2 rounded-full text-sm font-semibold hover:bg-[#E9DDCD] transition';
+            });
+            event.target.className = 'filter-btn active bg-[#765640] text-white px-5 py-2 rounded-full text-sm font-semibold transition';
+
+            if(category === 'All') renderMenu(menuData);
+            else renderMenu(menuData.filter(item => item.category === category));
+        }
+
+        function searchMenu() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            renderMenu(menuData.filter(item => item.name.toLowerCase().includes(query)));
+        }
+
+        function updateCart(itemId, change) {
+            if(!cart[itemId]) cart[itemId] = 0;
+            cart[itemId] += change;
+            if(cart[itemId] < 0) cart[itemId] = 0;
+
+            document.getElementById(`qty-${itemId}`).innerText = cart[itemId];
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            let totalItems = 0;
+            let totalPrice = 0;
+
+            menuData.forEach(item => {
+                if(cart[item.id] > 0) {
+                    totalItems += cart[item.id];
+                    totalPrice += (cart[item.id] * item.price);
+                }
+            });
+
+            document.getElementById('cartCount').innerText = totalItems;
+            document.getElementById('cartTotal').innerText = `Rp ${totalPrice.toLocaleString('id-ID')}`;
+
+            const floatingCart = document.getElementById('floatingCart');
+            if(totalItems > 0) floatingCart.classList.remove('hidden');
+            else floatingCart.classList.add('hidden');
+        }
+
+        renderMenu(menuData);
+    </script>
+
+
+</body>
+</html>
 
 </body>
 </html>
