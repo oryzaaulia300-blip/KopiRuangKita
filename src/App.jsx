@@ -55,16 +55,12 @@ function App() {
 
   return (
     <div className="bg-white text-gray-700 relative pb-24">
-      {/* ========================================================= */}
+    
       {/* NAVBAR UTAMA */}
-      {/* ========================================================= */}
       <header className="bg-white text-[#4A3728] sticky top-0 z-50 shadow-sm border-b border-[#E9DDCD]">
         <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
           
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#F8F1E7] flex items-center justify-center text-xl">
-              ☕
-            </div>
             <span className="text-2xl font-bold font-serif-custom tracking-wide text-[#4A3728]">
               Kopi Ruang Kita
             </span>
@@ -160,9 +156,8 @@ function App() {
         )}
       </header>
 
-      {/* ========================================================= */}
       {/* MODAL POP-UP LOGIN */}
-      {/* ========================================================= */}
+      
       {isLoginOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-xl border border-[#E9DDCD] relative">
