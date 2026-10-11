@@ -1,482 +1,446 @@
 <!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kopi Ruang Kita</title>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-
-    <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        .font-serif-custom {
-            font-family: 'Playfair Display', serif;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kopi Ruang Kita - Secangkir Kopi, Seribu Cerita</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts & Custom Font Style -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .font-serif-custom {
+      font-family: 'Playfair Display', serif;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+  </style>
 </head>
-
 <body class="bg-white text-gray-700 relative pb-24">
 
-    <!-- NAVBAR -->
-    <header class="bg-white text-[#4A3728] sticky top-0 z-50 shadow-sm border-b border-[#E9DDCD]">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+  <!-- NAVBAR UTAMA -->
+  <header class="bg-white text-[#4A3728] sticky top-0 z-50 shadow-sm border-b border-[#E9DDCD]">
+    <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+      
+      <div class="flex items-center gap-3">
+        <span class="text-2xl font-bold font-serif-custom tracking-wide text-[#4A3728]">
+          Kopi Ruang Kita
+        </span>
+      </div>
 
-            <!-- Logo -->
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-[#F8F1E7] flex items-center justify-center text-xl">
-                    ☕
-                </div>
+      <!-- Menu Desktop -->
+      <div class="hidden md:flex items-center space-x-8 font-medium text-[#5F5146]">
+        <a href="#home" class="hover:text-[#765640] transition">Home</a>
+        <a href="#tentang" class="hover:text-[#765640] transition">Tentang Kami</a>
+        <a href="#menu" class="hover:text-[#765640] transition">Menu</a>
+        <a href="#promo" class="hover:text-[#765640] transition">Promo</a>
+        <a href="#kontak" class="hover:text-[#765640] transition">Kontak</a>
+      </div>
 
-                <span class="text-2xl font-bold font-serif-custom tracking-wide text-[#4A3728]">
-                    Kopi Ruang Kita
-                </span>
-            </div>
+      <div class="hidden md:flex items-center gap-3">
+        <button 
+          onclick="toggleLoginModal(true)"
+          class="text-[#765640] hover:text-[#4A3728] font-medium text-sm transition flex items-center gap-1.5 px-4 py-2 rounded-lg border border-[#E9DDCD] hover:bg-[#F8F1E7] bg-white shadow-xs"
+        >
+          🔒 <span>Login Staf</span>
+        </button>
+        <a href="#menu" class="bg-[#765640] hover:bg-[#60432F] text-white font-semibold px-5 py-2.5 rounded-full transition text-sm shadow-sm">
+          Pesan Sekarang
+        </a>
+      </div>
 
-            <!-- Menu Links -->
-            <div class="hidden md:flex items-center space-x-8 font-medium text-[#5F5146]">
-                <a href="#home" class="hover:text-[#765640] transition">Home</a>
-                <a href="#tentang" class="hover:text-[#765640] transition">Tentang Kami</a>
-                <a href="#menu" class="hover:text-[#765640] transition">Menu</a>
-                <a href="#promo" class="hover:text-[#765640] transition">Promo</a>
-                <a href="#kontak" class="hover:text-[#765640] transition">Kontak</a>
-            </div>
+      <!-- Tombol Hamburger (Mobile) -->
+      <button 
+        onclick="toggleMobileMenu()"
+        id="mobile-menu-btn"
+        class="md:hidden text-2xl text-[#765640] focus:outline-none"
+      >
+        ☰
+      </button>
+    </nav>
 
-            <!-- Fitur Role & Tombol Aksi -->
-            <div class="hidden md:flex items-center gap-4">
-                
-                <!-- Tombol Aksi & Login Minimalis -->
-            <div class="hidden md:flex items-center gap-4">
-                
-                <!-- Tombol Dashboard Kasir (Hanya tampil jika sudah login sebagai Kasir/Owner) -->
-                <button id="btnDashboard" onclick="openReport()" class="hidden text-[#765640] hover:text-[#4A3728] font-bold text-sm transition flex items-center gap-1.5 px-3 py-2 rounded-lg hover:bg-[#F8F1E7]">
-                    ⚙️ Dashboard
-                </button>
+    <!-- Dropdown Menu untuk Mobile -->
+    <div id="mobile-menu" class="hidden md:hidden bg-[#F8F1E7] border-b border-[#E9DDCD] px-6 py-4 space-y-4 shadow-md">
+      <div class="flex flex-col space-y-3 font-medium text-[#5F5146]">
+        <a href="#home" onclick="toggleMobileMenu()" class="hover:text-[#765640] transition">Home</a>
+        <a href="#tentang" onclick="toggleMobileMenu()" class="hover:text-[#765640] transition">Tentang Kami</a>
+        <a href="#menu" onclick="toggleMobileMenu()" class="hover:text-[#765640] transition">Menu</a>
+        <a href="#promo" onclick="toggleMobileMenu()" class="hover:text-[#765640] transition">Promo</a>
+        <a href="#kontak" onclick="toggleMobileMenu()" class="hover:text-[#765640] transition">Kontak</a>
+      </div>
+      
+      <div class="pt-2 border-t border-[#E9DDCD] flex flex-col gap-3">
+        <button 
+          onclick="toggleMobileMenu(); toggleLoginModal(true);"
+          class="w-full text-center text-[#765640] font-medium text-sm py-2 rounded-lg border border-[#E9DDCD] bg-white"
+        >
+          🔒 Login Staf
+        </button>
+        <a 
+          href="#menu" 
+          onclick="toggleMobileMenu()"
+          class="w-full text-center bg-[#765640] text-white font-semibold py-2.5 rounded-full text-sm shadow-sm"
+        >
+          Pesan Sekarang
+        </a>
+      </div>
+    </div>
+  </header>
 
-                <!-- Tombol Login Minimalis -->
-                <button onclick="openLoginModal()" class="text-[#765640] hover:text-[#4A3728] font-medium text-sm transition flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[#E9DDCD] hover:bg-[#F8F1E7]">
-                    🔒 <span id="loginStatusText">Login</span>
-                </button>
-                
-                <!-- Tombol Pesan Sekarang -->
-                <a href="#menu" class="bg-[#765640] hover:bg-[#60432F] text-white font-semibold px-6 py-2.5 rounded-full transition text-sm shadow-sm">
-                    Pesan Sekarang
-                </a>
-            </div>
-
-            <button class="md:hidden text-2xl text-[#765640]">☰</button>
-        </nav>
-    </header>
-
-    <main>
-
-        <!-- HOME / HERO SECTION -->
-        <section id="home" class="min-h-screen flex items-center bg-[#F8F1E7]">
-            <div class="container mx-auto px-6 py-16">
-                <div class="grid md:grid-cols-2 gap-10 items-center">
-
-                    <!-- Teks Hero -->
-                    <div>
-                        <span class="inline-block bg-[#E9DDCD] text-[#5F5146] text-xs font-bold tracking-widest px-4 py-2 rounded-full uppercase mb-5">
-                            Selamat Datang di Kopi Ruang Kita
-                        </span>
-
-                        <h1 class="text-4xl md:text-6xl font-bold font-serif-custom text-[#4A3728] leading-tight mb-6">
-                            Secangkir Kopi,
-                            <span class="text-[#765640]">Seribu Cerita.</span>
-                        </h1>
-
-                        <p class="text-[#5F5146] text-lg leading-relaxed mb-8 max-w-lg">
-                            Nikmati kopi pilihan dengan suasana nyaman untuk
-                            berkumpul, bekerja, dan berbagi cerita bersama orang-orang
-                            tersayang.
-                        </p>
-
-                        <a href="#menu" class="inline-block bg-[#765640] hover:bg-[#60432F] text-white font-semibold px-8 py-3.5 rounded-full shadow-sm transition">
-                            Lihat Menu
-                        </a>
-                    </div>
-
-                    <!-- Gambar Hero -->
-                    <div class="flex justify-center">
-                        <img
-                            src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80"
-                            alt="Secangkir kopi"
-                            class="w-full max-w-lg h-[450px] object-cover rounded-3xl shadow-lg"
-                        >
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- TENTANG KAMI -->
-        <section id="tentang" class="py-20 bg-white">
-            <div class="container mx-auto px-6">
-                <div class="grid md:grid-cols-2 gap-12 items-center">
-
-                    <!-- Gambar -->
-                    <div>
-                        <img
-                            src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=900&q=80"
-                            alt="Suasana Kopi Ruang Kita"
-                            class="w-full h-[400px] object-cover rounded-3xl shadow-lg"
-                        >
-                    </div>
-
-                    <!-- Teks -->
-                    <div>
-                        <span class="text-[#765640] font-semibold tracking-widest uppercase text-sm">
-                            Tentang Kami
-                        </span>
-
-                        <h2 class="text-3xl md:text-4xl font-bold font-serif-custom text-[#4A3728] mt-3 mb-5">
-                            Tempat untuk Kopi dan Cerita
-                        </h2>
-
-                        <p class="text-[#5F5146] leading-relaxed mb-4">
-                            Kopi Ruang Kita adalah tempat yang nyaman untuk menikmati
-                            kopi berkualitas sambil berbagi cerita bersama teman,
-                            keluarga, maupun orang-orang terdekat.
-                        </p>
-
-                        <p class="text-[#5F5146] leading-relaxed">
-                            Kami percaya bahwa secangkir kopi bukan hanya tentang rasa,
-                            tetapi juga tentang menciptakan suasana dan kenangan yang
-                            menyenangkan.
-                        </p>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- MENU -->
-        <section id="menu" class="py-20 bg-[#F8F1E7]">
-            <div class="container mx-auto px-5 md:px-6">
-                <div class="text-center mb-12">
-                    <span class="text-[#765640] font-semibold tracking-widest uppercase text-sm">Pilihan Kami</span>
-                    <h2 class="text-3xl md:text-4xl font-bold font-serif-custom text-[#4A3728] mt-3 mb-4">Menu Kopi Ruang Kita</h2>
-                    <p class="text-[#5F5146] max-w-xl mx-auto">Temukan minuman dan camilan favoritmu untuk menemani setiap cerita.</p>
-                </div>
-                <div class="max-w-md mx-auto mb-12">
-                    <input id="searchInput" type="search" oninput="searchMenu()" placeholder="Cari menu favoritmu..." class="w-full px-5 py-3 rounded-full bg-white border border-[#E9DDCD] text-[#4A3728] focus:outline-none focus:border-[#765640]">
-                </div>
-                <div id="menuGrid" class="space-y-14"></div>
-            </div>
-        </section>
-
-        <!-- PROMO SPESIAL -->
-        <section id="promo" class="py-20 bg-white">
-            <div class="container mx-auto px-5 md:px-6">
-                <div class="text-center mb-12">
-                    <span class="text-[#765640] font-semibold tracking-widest uppercase text-sm">Penawaran Menarik</span>
-                    <h2 class="text-3xl md:text-4xl font-bold font-serif-custom text-[#4A3728] mt-3 mb-4">PROMO SPESIAL!</h2>
-                    <p class="text-[#5F5146] max-w-xl mx-auto">Ada lebih banyak alasan untuk mampir dan menikmati waktu di Kopi Ruang Kita.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                    <!-- Promo Bundling -->
-                    <article class="bg-[#F8F1E7] rounded-2xl overflow-hidden border border-[#E9DDCD] shadow-sm hover:shadow-md transition flex flex-col">
-                        <div class="bg-[#765640] text-white px-5 py-3 flex items-center justify-between">
-                            <span class="text-xs font-bold tracking-widest uppercase">Promo Bundling</span>
-                            <span class="text-xl">☕</span>
-                        </div>
-                        <img src="https://i.pinimg.com/1200x/9b/a9/12/9ba912a184bba875c88ec7d33391ebf4.jpg" alt="Paket Nyore Kopi Susu Gula Aren dan Roti Bakar Coklat" class="w-full aspect-square object-cover">
-                        <div class="p-6 flex flex-col flex-grow">
-                            <span class="inline-block self-start bg-white text-[#765640] text-xs font-bold px-3 py-1 rounded-full mb-3">PAKET NYORE</span>
-                            <h3 class="text-xl font-bold font-serif-custom text-[#4A3728] mb-3">Teman Santai Sore</h3>
-                            <p class="text-sm text-[#5F5146] leading-relaxed mb-4">Nikmati Kopi Susu Gula Aren dan Roti Bakar Coklat dalam satu paket hemat untuk menemani waktu santaimu.</p>
-                            <div class="mt-auto border-t border-[#E9DDCD] pt-4">
-                                <p class="text-sm text-[#5F5146]">Harga normal <span class="line-through">Rp34.000</span></p>
-                                <p class="text-2xl font-bold text-[#765640]">Rp29.000</p>
-                                <p class="text-xs text-[#5F5146] mt-1">Hemat Rp5.000 untuk setiap Paket Nyore.</p>
-                            </div>
-                        </div>
-                    </article>
-
-                    <!-- Promo BOGO -->
-                    <article class="bg-[#F8F1E7] rounded-2xl overflow-hidden border border-[#E9DDCD] shadow-sm hover:shadow-md transition flex flex-col">
-                        <div class="bg-[#765640] text-white px-5 py-3 flex items-center justify-between">
-                            <span class="text-xs font-bold tracking-widest uppercase">Buy 1 Get 1</span>
-                            <span class="text-xl">🎉</span>
-                        </div>
-                        <div class="p-6 flex flex-col flex-grow">
-                            <span class="inline-block self-start bg-white text-[#765640] text-xs font-bold px-3 py-1 rounded-full mb-3">HAPPY HOUR</span>
-                            <h3 class="text-xl font-bold font-serif-custom text-[#4A3728] mb-3">Beli 1, Gratis 1</h3>
-                            <p class="text-sm text-[#5F5146] leading-relaxed mb-4">Pesan satu minuman pilihan dan dapatkan satu minuman gratis selama periode Happy Hour berlangsung.</p>
-                            <div class="mt-auto border-t border-[#E9DDCD] pt-4">
-                                <p class="text-2xl font-bold text-[#765640]">13.00–15.00</p>
-                                <p class="text-xs text-[#5F5146] mt-1">Setiap hari selama jam Happy Hour. Syarat dan pilihan minuman mengikuti ketentuan promo.</p>
-                            </div>
-                        </div>
-                    </article>
-
-                    <!-- Promo Senin -->
-                    <article class="bg-[#F8F1E7] rounded-2xl overflow-hidden border border-[#E9DDCD] shadow-sm hover:shadow-md transition flex flex-col">
-                        <div class="bg-[#765640] text-white px-5 py-3 flex items-center justify-between">
-                            <span class="text-xs font-bold tracking-widest uppercase">Promo Mingguan</span>
-                            <span class="text-xl">✨</span>
-                        </div>
-                        <div class="p-6 flex flex-col flex-grow">
-                            <span class="inline-block self-start bg-white text-[#765640] text-xs font-bold px-3 py-1 rounded-full mb-3">MONDAY DEAL</span>
-                            <h3 class="text-xl font-bold font-serif-custom text-[#4A3728] mb-3">Senin Lebih Hemat</h3>
-                            <p class="text-sm text-[#5F5146] leading-relaxed mb-4">Awali minggu dengan menikmati menu favoritmu dan dapatkan potongan harga 10% setiap hari Senin.</p>
-                            <div class="mt-auto border-t border-[#E9DDCD] pt-4">
-                                <p class="text-3xl font-bold text-[#765640]">DISKON 10%</p>
-                                <p class="text-xs text-[#5F5146] mt-1">Berlaku setiap hari Senin sesuai syarat dan ketentuan promo.</p>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- MODAL CHECKOUT -->
-    <div id="checkoutModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
-        <div class="bg-white rounded-2xl w-full max-w-md p-6 m-4 relative">
-            <button onclick="closeModal('checkoutModal')" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 font-bold text-xl">X</button>
-            <h3 class="text-2xl font-bold text-[#4A3728] mb-4 font-serif-custom">Form Pemesanan</h3>
-            <form id="checkoutForm" onsubmit="processCheckout(event)">
-                <div class="mb-3">
-                    <label class="block text-sm text-[#5F5146] mb-1">Nama Pelanggan</label>
-                    <input type="text" id="custName" required class="w-full px-4 py-2 border border-[#E9DDCD] rounded-lg focus:outline-none focus:border-[#765640]">
-                </div>
-                <div class="mb-3">
-                    <label class="block text-sm text-[#5F5146] mb-1">Tipe Pesanan</label>
-                    <select id="orderType" class="w-full px-4 py-2 border border-[#E9DDCD] rounded-lg focus:outline-none focus:border-[#765640]">
-                        <option value="Dine-In">Dine-In</option>
-                        <option value="Takeaway">Takeaway</option>
-                    </select>
-                </div>
-                <button type="submit" class="w-full bg-[#765640] hover:bg-[#60432F] text-white font-bold py-3 rounded-xl mt-4 transition">Buat Pesanan & Bayar</button>
-            </form>
+  <!-- MODAL POP-UP LOGIN -->
+  <div id="login-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-xl border border-[#E9DDCD] relative">
+      <button 
+        onclick="toggleLoginModal(false)"
+        class="absolute top-4 right-4 text-gray-400 hover:text-[#4A3728] text-xl font-bold"
+      >
+        ✕
+      </button>
+      
+      <h3 class="text-2xl font-bold font-serif-custom text-[#4A3728] mb-2 text-center">Login Karyawan / Owner</h3>
+      <p class="text-sm text-[#5F5146] text-center mb-6">Silakan masukkan akun manajemen Anda.</p>
+      
+      <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-[#4A3728] mb-1">Username</label>
+          <input 
+            type="text" 
+            id="login-username"
+            placeholder="Masukkan username..."
+            class="w-full px-4 py-2.5 rounded-xl border border-[#E9DDCD] focus:outline-none focus:border-[#765640] text-[#4A3728]"
+          />
         </div>
+        <div>
+          <label class="block text-sm font-medium text-[#4A3728] mb-1">Password</label>
+          <input 
+            type="password" 
+            id="login-password"
+            placeholder="••••••••"
+            class="w-full px-4 py-2.5 rounded-xl border border-[#E9DDCD] focus:outline-none focus:border-[#765640] text-[#4A3728]"
+          />
+        </div>
+        <button 
+          type="submit"
+          class="w-full bg-[#765640] hover:bg-[#60432F] text-white font-semibold py-3 rounded-xl transition shadow-sm mt-2"
+        >
+          Masuk Dashboard
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <main>
+    <!-- HOME / HERO SECTION -->
+    <section id="home" class="min-h-screen flex items-center bg-[#F8F1E7]">
+      <div class="container mx-auto px-6 py-16">
+        <div class="grid md:grid-cols-2 gap-10 items-center">
+          
+          <div class="flex flex-col items-center text-center">
+            <div class="mb-6 flex justify-center">
+             <img 
+                src="LogoKopiRuangKita.jpeg" 
+                alt="Logo Kopi Ruang Kita" 
+                class="w-36 h-36 object-cover rounded-full border-4 border-white shadow-md" 
+            />
+            </div>
+
+            <span class="inline-block bg-[#E9DDCD] text-[#5F5146] text-xs font-bold tracking-widest px-4 py-2 rounded-full uppercase mb-5">
+              Selamat Datang di Kopi Ruang Kita
+            </span>
+            
+            <h1 class="text-4xl md:text-6xl font-bold font-serif-custom text-[#4A3728] leading-tight mb-6">
+              Secangkir Kopi,
+              <span class="text-[#765640]"> Seribu Cerita.</span>
+            </h1>
+            
+            <p class="text-[#5F5146] text-lg leading-relaxed mb-8 max-w-lg mx-auto">
+              Nikmati kopi pilihan dengan suasana nyaman untuk berkumpul, bekerja, dan berbagi cerita bersama orang-orang tersayang.
+            </p>
+            
+            <a href="#menu" class="inline-block bg-[#765640] hover:bg-[#60432F] text-white font-semibold px-8 py-3.5 rounded-full shadow-sm transition">
+              Lihat Menu
+            </a>
+          </div>
+
+          <div class="flex justify-center">
+            <img
+              src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80"
+              alt="Secangkir kopi"
+              class="w-full max-w-lg h-[450px] object-cover rounded-3xl shadow-lg"
+            />
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TENTANG KAMI -->
+    <section id="tentang" class="py-20 bg-white">
+      <div class="container mx-auto px-6">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <img
+              src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=900&q=80"
+              alt="Suasana Kopi Ruang Kita"
+              class="w-full h-[400px] object-cover rounded-3xl shadow-lg"
+            />
+          </div>
+          <div>
+            <span class="text-[#765640] font-semibold tracking-widest uppercase text-sm">
+              Tentang Kami
+            </span>
+            <h2 class="text-3xl md:text-4xl font-bold font-serif-custom text-[#4A3728] mt-3 mb-5">
+              Tempat untuk Kopi dan Cerita
+            </h2>
+            <p class="text-[#5F5146] leading-relaxed mb-4">
+              Kopi Ruang Kita adalah tempat yang nyaman untuk menikmati kopi berkualitas sambil berbagi cerita bersama teman, keluarga, maupun orang-orang terdekat.
+            </p>
+            <p class="text-[#5F5146] leading-relaxed">
+              Kami percaya bahwa secangkir kopi bukan hanya tentang rasa, tetapi juga tentang menciptakan suasana dan kenangan yang menyenangkan.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MENU -->
+    <section id="menu" class="py-20 bg-[#F8F1E7]">
+      <div class="container mx-auto px-5 md:px-6">
+        <div class="text-center mb-12">
+          <span class="text-[#765640] font-semibold tracking-widest uppercase text-sm">Pilihan Kami</span>
+          <h2 class="text-3xl md:text-4xl font-bold font-serif-custom text-[#4A3728] mt-3 mb-4">Menu Kopi Ruang Kita</h2>
+          <p class="text-[#5F5146] max-w-xl mx-auto">Temukan minuman dan camilan favoritmu untuk menemani setiap cerita.</p>
+        </div>
+        
+        <div class="max-w-md mx-auto mb-12">
+          <input 
+            type="search" 
+            id="search-input"
+            oninput="handleSearch()"
+            placeholder="Cari menu favoritmu..." 
+            class="w-full px-5 py-3 rounded-full bg-white border border-[#E9DDCD] text-[#4A3728] focus:outline-none focus:border-[#765640]" 
+          />
+        </div>
+
+        <div id="menu-container" class="space-y-14">
+          <!-- Dynamic Menu Rendered via JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- PROMO SPESIAL -->
+    <section id="promo" class="py-20 bg-white">
+      <div class="container mx-auto px-5 md:px-6">
+        <div class="text-center mb-12">
+          <span class="text-[#765640] font-semibold tracking-widest uppercase text-sm">Penawaran Menarik</span>
+          <h2 class="text-3xl md:text-4xl font-bold font-serif-custom text-[#4A3728] mt-3 mb-4">PROMO SPESIAL!</h2>
+          <p class="text-[#5F5146] max-w-xl mx-auto">Ada lebih banyak alasan untuk mampir dan menikmati waktu di Kopi Ruang Kita.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <article class="bg-[#F8F1E7] rounded-2xl overflow-hidden border border-[#E9DDCD] shadow-sm hover:shadow-md transition flex flex-col">
+            <div class="bg-[#765640] text-white px-5 py-3 flex items-center justify-between">
+              <span class="text-xs font-bold tracking-widest uppercase">Promo Bundling</span>
+              <span class="text-xl">☕</span>
+            </div>
+            <img src="https://i.pinimg.com/1200x/9b/a9/12/9ba912a184bba875c88ec7d33391ebf4.jpg" alt="Paket Nyore" class="w-full aspect-square object-cover" />
+            <div class="p-6 flex flex-col flex-grow">
+              <span class="inline-block self-start bg-white text-[#765640] text-xs font-bold px-3 py-1 rounded-full mb-3">PAKET NYORE</span>
+              <h3 class="text-xl font-bold font-serif-custom text-[#4A3728] mb-3">Teman Santai Sore</h3>
+              <p class="text-sm text-[#5F5146] leading-relaxed mb-4">Nikmati Kopi Susu Gula Aren dan Roti Bakar Coklat dalam satu paket hemat.</p>
+              <div class="mt-auto border-t border-[#E9DDCD] pt-4">
+                <p class="text-sm text-[#5F5146]">Harga normal <span class="line-through">Rp34.000</span></p>
+                <p class="text-2xl font-bold text-[#765640]">Rp29.000</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="bg-[#F8F1E7] rounded-2xl overflow-hidden border border-[#E9DDCD] shadow-sm hover:shadow-md transition flex flex-col">
+            <div class="bg-[#765640] text-white px-5 py-3 flex items-center justify-between">
+              <span class="text-xs font-bold tracking-widest uppercase">Buy 1 Get 1</span>
+              <span class="text-xl">🎉</span>
+            </div>
+            <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=900&q=80" alt="Promo BOGO" class="w-full aspect-square object-cover" />
+            <div class="p-6 flex flex-col flex-grow">
+              <span class="inline-block self-start bg-white text-[#765640] text-xs font-bold px-3 py-1 rounded-full mb-3">HAPPY HOUR</span>
+              <h3 class="text-xl font-bold font-serif-custom text-[#4A3728] mb-3">Beli 1, Gratis 1</h3>
+              <p class="text-sm text-[#5F5146] leading-relaxed mb-4">Pesan satu minuman pilihan dan dapatkan satu minuman gratis selama Happy Hour.</p>
+              <div class="mt-auto border-t border-[#E9DDCD] pt-4">
+                <p class="text-2xl font-bold text-[#765640]">13.00–15.00</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="bg-[#F8F1E7] rounded-2xl overflow-hidden border border-[#E9DDCD] shadow-sm hover:shadow-md transition flex flex-col">
+            <div class="bg-[#765640] text-white px-5 py-3 flex items-center justify-between">
+              <span class="text-xs font-bold tracking-widest uppercase">Promo Mingguan</span>
+              <span class="text-xl">✨</span>
+            </div>
+            <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=900&q=80" alt="Promo Senin" class="w-full aspect-square object-cover" />
+            <div class="p-6 flex flex-col flex-grow">
+              <span class="inline-block self-start bg-white text-[#765640] text-xs font-bold px-3 py-1 rounded-full mb-3">MONDAY DEAL</span>
+              <h3 class="text-xl font-bold font-serif-custom text-[#4A3728] mb-3">Senin Lebih Hemat</h3>
+              <p class="text-sm text-[#5F5146] leading-relaxed mb-4">Awali minggu dengan menikmati menu favoritmu dan dapatkan diskon 10%.</p>
+              <div class="mt-auto border-t border-[#E9DDCD] pt-4">
+                <p class="text-3xl font-bold text-[#765640]">DISKON 10%</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer id="kontak" class="bg-[#F8F1E7] text-[#5F5146] py-12 border-t border-[#E9DDCD]">
+    <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div>
+        <h3 class="text-2xl font-bold font-serif-custom mb-4 text-[#4A3728]">
+          Kopi Ruang Kita
+        </h3>
+        <p class="text-sm text-[#5F5146] leading-relaxed">
+          Menyajikan secangkir kopi dengan seribu cerita. Tempat terbaik untuk menemukan inspirasi dan ketenangan.
+        </p>
+      </div>
+      <div>
+        <h3 class="text-lg font-bold mb-4 text-[#4A3728]">
+          Informasi & Lokasi
+        </h3>
+        <ul class="space-y-2 text-sm text-[#5F5146]">
+          <li>📍 Jl. Dr. Mansyur No. 12, Medan</li>
+          <li>🕒 Buka Setiap Hari: 08.00 - 22.00 WIB</li>
+          <li>📞 0812-3456-7890</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-lg font-bold mb-4 text-[#4A3728]">
+          Media Sosial
+        </h3>
+        <div class="flex space-x-3">
+          <a href="#" class="w-10 h-10 rounded-lg bg-white text-[#765640] border border-[#E9DDCD] flex items-center justify-center hover:bg-[#E9DDCD] transition font-bold">IG</a>
+          <a href="#" class="w-10 h-10 rounded-lg bg-white text-[#765640] border border-[#E9DDCD] flex items-center justify-center hover:bg-[#E9DDCD] transition font-bold">TT</a>
+          <a href="#" class="w-10 h-10 rounded-lg bg-white text-[#765640] border border-[#E9DDCD] flex items-center justify-center hover:bg-[#E9DDCD] transition font-bold">FB</a>
+        </div>
+      </div>
     </div>
 
-    <!-- MODAL QRIS -->
-    <div id="qrisModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
-        <div class="bg-white rounded-2xl w-full max-w-sm p-6 m-4 text-center relative">
-            <h3 class="text-xl font-bold text-[#4A3728] mb-2 font-serif-custom">Scan QRIS</h3>
-            <p class="text-sm text-gray-500 mb-4">Silakan scan kode QR di bawah ini.</p>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="QRIS" class="w-48 h-48 mx-auto mb-4 border p-2 rounded-xl shadow-sm">
-            <p class="text-2xl font-bold text-[#765640] mb-4" id="qrisTotal">Rp 0</p>
-            <button onclick="finishPayment()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition">Simulasi: Pembayaran Berhasil</button>
-        </div>
+    <div class="container mx-auto px-6 text-center mt-12 pt-6 border-t border-[#E9DDCD] text-[#5F5146] text-xs">
+      &copy; 2026 Kopi Ruang Kita. All rights reserved.
     </div>
+  </footer>
 
-    <!-- MODAL STRUK DIGITAL -->
-    <div id="strukModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
-        <div class="bg-white w-full max-w-sm p-6 m-4 relative border-t-8 border-[#765640] shadow-2xl">
-            <h3 class="text-xl font-bold text-[#4A3728] text-center font-serif-custom">Kopi Ruang Kita</h3>
-            <p class="text-xs text-center text-gray-500 mb-4">Jl. Dr. Mansyur No. 12, Medan</p>
-            <hr class="border-dashed border-gray-400 mb-4">
-            <div class="text-sm mb-4 text-gray-700" id="strukDetails">
-                <!-- Detail pesanan diisi via JS -->
+  <!-- JavaScript Logic -->
+  <script>
+    const menuData = [
+      { id: 1, name: 'Kopi Susu Gula Aren', category: 'Coffee', price: 18000, img: 'https://i.pinimg.com/736x/f0/49/5b/f0495b2d4ee979ac4068f4c61a57397b.jpg', description: 'Perpaduan espresso, susu creamy, dan manis legit gula aren.' },
+      { id: 2, name: 'Americano', category: 'Coffee', price: 15000, img: 'https://images.unsplash.com/photo-1551030173-122aabc4489c?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Kopi hitam dengan rasa bold dan aroma espresso yang khas.' },
+      { id: 3, name: 'Cafe Latte', category: 'Coffee', price: 22000, img: 'https://images.unsplash.com/photo-1502462041640-b3d7e50d0662?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Espresso lembut berpadu dengan susu steamed yang creamy.' },
+      { id: 4, name: 'Caramel Macchiato', category: 'Coffee', price: 25000, img: 'https://i.pinimg.com/736x/c3/0e/0e/c30e0ecc2b17ff4fa571f5963c70519b.jpg', description: 'Minuman kopi susu dengan sentuhan manis saus karamel.' },
+      { id: 5, name: 'Matcha Latte', category: 'Non-Coffee', price: 22000, img: 'https://plus.unsplash.com/premium_photo-1695151556198-6b21eae6215d?q=80&w=783&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Matcha dengan rasa khas yang berpadu dengan susu lembut.' },
+      { id: 6, name: 'Taro Latte', category: 'Non-Coffee', price: 20000, img: 'https://i.pinimg.com/736x/ac/a2/0d/aca20d8451b60b70937f98d1c27e4e5f.jpg', description: 'Minuman taro creamy dengan rasa manis yang menenangkan.' },
+      { id: 7, name: 'Red Velvet Latte', category: 'Non-Coffee', price: 22000, img: 'https://i.pinimg.com/736x/1c/b0/45/1cb0450d33404c6383a1d44003d42e77.jpg', description: 'Latte red velvet lembut dengan cita rasa manis yang unik.' },
+      { id: 8, name: 'Lychee Tea', category: 'Non-Coffee', price: 18000, img: 'https://i.pinimg.com/736x/2c/58/8b/2c588b17c03c59becba4cc8baf7d0ba9.jpg', description: 'Teh segar dengan aroma dan rasa manis buah leci.' },
+      { id: 9, name: 'French Fries', category: 'Snack', price: 15000, img: 'https://plus.unsplash.com/premium_photo-1683121324474-83460636b0ed?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Kentang goreng renyah yang cocok menemani waktu santai.' },
+      { id: 10, name: 'Roti Bakar Coklat', category: 'Snack', price: 16000, img: 'https://i.pinimg.com/1200x/35/57/e2/3557e272e25b7180fd1e20ba4da79c8e.jpg', description: 'Roti bakar hangat dengan isian cokelat manis yang lumer.' },
+      { id: 11, name: 'Pisang Goreng Keju', category: 'Snack', price: 15000, img: 'https://i.pinimg.com/1200x/2b/59/b6/2b59b672b0e83a51ea27e78e6cf2649b.jpg', description: 'Pisang goreng renyah dengan taburan keju gurih.' },
+      { id: 12, name: 'Dimsum Ayam', category: 'Snack', price: 18000, img: 'https://images.unsplash.com/photo-1604632910793-c0601f361b34?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Dimsum ayam lembut dengan isian gurih di setiap gigitan.' }
+    ];
+
+    let cart = {};
+
+    function updateCart(itemId, change) {
+      cart[itemId] = (cart[itemId] || 0) + change;
+      if (cart[itemId] < 0) cart[itemId] = 0;
+      document.getElementById(`count-${itemId}`).innerText = cart[itemId];
+    }
+
+    function renderMenu(filter = '') {
+      const container = document.getElementById('menu-container');
+      container.innerHTML = '';
+
+      const categories = ['Coffee', 'Non-Coffee', 'Snack'];
+      
+      categories.forEach(category => {
+        const filteredItems = menuData.filter(item => 
+          item.category === category && 
+          (item.name.toLowerCase().includes(filter.toLowerCase()) || 
+           item.description.toLowerCase().includes(filter.toLowerCase()))
+        );
+
+        if (filteredItems.length === 0) return;
+
+        let sectionHTML = `
+          <section>
+            <div class="flex items-center gap-4 mb-5">
+              <h3 class="text-2xl font-bold font-serif-custom text-[#4A3728]">${category}</h3>
+              <div class="h-px flex-grow bg-[#D8C5B2]"></div>
             </div>
-            <button onclick="closeAllAndReset()" class="w-full bg-[#765640] hover:bg-[#60432F] text-white font-bold py-2 rounded-xl transition mt-2">Tutup & Selesai</button>
-        </div>
-    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        `;
 
-    <!-- MODAL SALES REPORT (DASHBOARD OWNER/KASIR) -->
-    <div id="reportModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
-        <div class="bg-white rounded-2xl w-full max-w-2xl p-6 m-4 relative max-h-[80vh] overflow-y-auto">
-            <button onclick="closeModal('reportModal')" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 font-bold text-xl">X</button>
-            <h3 class="text-2xl font-bold text-[#4A3728] mb-4 font-serif-custom">Laporan Penjualan (Kasir)</h3>
-            <div class="grid grid-cols-2 gap-4 mb-6">
-                <div class="bg-[#F8F1E7] p-4 rounded-xl border border-[#E9DDCD]">
-                    <p class="text-sm text-[#5F5146]">Total Transaksi</p>
-                    <p class="text-2xl font-bold text-[#765640]" id="reportTotalTrx">0</p>
-                </div>
-                <div class="bg-[#F8F1E7] p-4 rounded-xl border border-[#E9DDCD]">
-                    <p class="text-sm text-[#5F5146]">Total Omzet Pendapatan</p>
-                    <p class="text-2xl font-bold text-[#765640]" id="reportTotalOmzet">Rp 0</p>
-                </div>
+        filteredItems.forEach(item => {
+          const count = cart[item.id] || 0;
+          sectionHTML += `
+            <div class="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition border border-[#E9DDCD] flex flex-col h-full">
+              <img src="${item.img}" alt="${item.name}" class="w-full h-48 object-cover rounded-xl mb-4" loading="lazy" />
+              <div class="flex-grow">
+                <h3 class="font-bold text-[#4A3728] text-lg mb-2">${item.name}</h3>
+                <p class="text-sm text-[#5F5146] leading-relaxed mb-3">${item.description}</p>
+                <p class="font-bold text-[#765640] text-base">Rp ${item.price.toLocaleString('id-ID')}</p>
+              </div>
+              <div class="mt-4 flex items-center justify-between border-t border-[#E9DDCD] pt-3">
+                <button onclick="updateCart(${item.id}, -1)" class="w-8 h-8 rounded-full bg-[#F8F1E7] text-[#765640] font-bold hover:bg-[#E9DDCD]">−</button>
+                <span id="count-${item.id}" class="font-bold text-[#4A3728] text-sm">${count}</span>
+                <button onclick="updateCart(${item.id}, 1)" class="w-8 h-8 rounded-full bg-[#765640] text-white font-bold hover:bg-[#60432F]">+</button>
+              </div>
             </div>
-            <h4 class="font-bold text-[#4A3728] mb-2">Riwayat Transaksi</h4>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left border-collapse">
-                    <thead class="bg-[#F8F1E7] text-[#5F5146]">
-                        <tr>
-                            <th class="p-3 border border-[#E9DDCD]">Kode Pesanan</th>
-                            <th class="p-3 border border-[#E9DDCD]">Pelanggan</th>
-                            <th class="p-3 border border-[#E9DDCD]">Kasir</th>
-                            <th class="p-3 border border-[#E9DDCD]">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody id="reportTableBody">
-                        <!-- Data masuk otomatis dari JS -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+          `;
+        });
 
-    <!-- FOOTER -->
-    <footer id="kontak" class="bg-[#F8F1E7] text-[#5F5146] py-12 border-t border-[#E9DDCD]">
-        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+        sectionHTML += `</div></section>`;
+        container.innerHTML += sectionHTML;
+      });
+    }
 
-            <!-- Informasi Brand -->
-            <div>
-                <h3 class="text-2xl font-bold font-serif-custom mb-4 text-[#4A3728]">
-                    Kopi Ruang Kita
-                </h3>
+    function handleSearch() {
+      const query = document.getElementById('search-input').value;
+      renderMenu(query);
+    }
 
-                <p class="text-sm text-[#5F5146] leading-relaxed">
-                    Menyajikan secangkir kopi dengan seribu cerita. Tempat terbaik
-                    untuk menemukan inspirasi dan ketenangan.
-                </p>
-            </div>
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const btn = document.getElementById('mobile-menu-btn');
+      menu.classList.toggle('hidden');
+      btn.innerText = menu.classList.contains('hidden') ? '☰' : '✕';
+    }
 
-            <!-- Informasi Lokasi -->
-            <div>
-                <h3 class="text-lg font-bold mb-4 text-[#4A3728]">
-                    Informasi & Lokasi
-                </h3>
+    function toggleLoginModal(open) {
+      const modal = document.getElementById('login-modal');
+      if (open) {
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
 
-                <ul class="space-y-2 text-sm text-[#5F5146]">
-                    <li>📍 Jl. Dr. Mansyur No. 12, Medan</li>
-                    <li>🕒 Buka Setiap Hari: 08.00 - 22.00 WIB</li>
-                    <li>📞 0812-3456-7890</li>
-                </ul>
-            </div>
+    function handleLoginSubmit(e) {
+      e.preventDefault();
+      const username = document.getElementById('login-username').value;
+      const password = document.getElementById('login-password').value;
+      
+      if (!username || !password) {
+        alert('Username dan Password wajib diisi!');
+        return;
+      }
+      alert(`Login berhasil! Selamat datang, ${username}.`);
+      document.getElementById('login-username').value = '';
+      document.getElementById('login-password').value = '';
+      toggleLoginModal(false);
+    }
 
-            <!-- Media Sosial -->
-            <div>
-                <h3 class="text-lg font-bold mb-4 text-[#4A3728]">
-                    Media Sosial
-                </h3>
-
-                <div class="flex space-x-3">
-                    <a href="#" class="w-10 h-10 rounded-lg bg-white text-[#765640] border border-[#E9DDCD] flex items-center justify-center hover:bg-[#E9DDCD] transition font-bold">IG</a>
-
-                    <a href="#" class="w-10 h-10 rounded-lg bg-white text-[#765640] border border-[#E9DDCD] flex items-center justify-center hover:bg-[#E9DDCD] transition font-bold">TT</a>
-
-                    <a href="#" class="w-10 h-10 rounded-lg bg-white text-[#765640] border border-[#E9DDCD] flex items-center justify-center hover:bg-[#E9DDCD] transition font-bold">FB</a>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="container mx-auto px-6 text-center mt-12 pt-6 border-t border-[#E9DDCD] text-[#5F5146] text-xs">
-            &copy; 2026 Kopi Ruang Kita. All rights reserved.
-        </div>
-    </footer>
-
-    <!-- LOGIKA JAVASCRIPT UNTUK MENU & KASIR -->
-    <script>
-        const menuData = [
-            { id: 1, name: 'Kopi Susu Gula Aren', category: 'Coffee', price: 18000, img: 'https://i.pinimg.com/736x/f0/49/5b/f0495b2d4ee979ac4068f4c61a57397b.jpg', description: 'Perpaduan espresso, susu creamy, dan manis legit gula aren.' },
-            { id: 2, name: 'Americano', category: 'Coffee', price: 15000, img: 'https://images.unsplash.com/photo-1551030173-122aabc4489c?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Kopi hitam dengan rasa bold dan aroma espresso yang khas.' },
-            { id: 3, name: 'Cafe Latte', category: 'Coffee', price: 22000, img: 'https://images.unsplash.com/photo-1502462041640-b3d7e50d0662?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Espresso lembut berpadu dengan susu steamed yang creamy.' },
-            { id: 4, name: 'Caramel Macchiato', category: 'Coffee', price: 25000, img: 'https://i.pinimg.com/736x/c3/0e/0e/c30e0ecc2b17ff4fa571f5963c70519b.jpg', description: 'Minuman kopi susu dengan sentuhan manis saus karamel.' },
-            { id: 5, name: 'Matcha Latte', category: 'Non-Coffee', price: 22000, img: 'https://plus.unsplash.com/premium_photo-1695151556198-6b21eae6215d?q=80&w=783&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Matcha dengan rasa khas yang berpadu dengan susu lembut.' },
-            { id: 6, name: 'Taro Latte', category: 'Non-Coffee', price: 20000, img: 'https://i.pinimg.com/736x/ac/a2/0d/aca20d8451b60b70937f98d1c27e4e5f.jpg', description: 'Minuman taro creamy dengan rasa manis yang menenangkan.' },
-            { id: 7, name: 'Red Velvet Latte', category: 'Non-Coffee', price: 22000, img: 'https://i.pinimg.com/736x/1c/b0/45/1cb0450d33404c6383a1d44003d42e77.jpg', description: 'Latte red velvet lembut dengan cita rasa manis yang unik.' },
-            { id: 8, name: 'Lychee Tea', category: 'Non-Coffee', price: 18000, img: 'https://i.pinimg.com/736x/2c/58/8b/2c588b17c03c59becba4cc8baf7d0ba9.jpg', description: 'Teh segar dengan aroma dan rasa manis buah leci.' },
-            { id: 9, name: 'French Fries', category: 'Snack', price: 15000, img: 'https://plus.unsplash.com/premium_photo-1683121324474-83460636b0ed?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Kentang goreng renyah yang cocok menemani waktu santai.' },
-            { id: 10, name: 'Roti Bakar Coklat', category: 'Snack', price: 16000, img: 'https://i.pinimg.com/1200x/35/57/e2/3557e272e25b7180fd1e20ba4da79c8e.jpg', description: 'Roti bakar hangat dengan isian cokelat manis yang lumer.' },
-            { id: 11, name: 'Pisang Goreng Keju', category: 'Snack', price: 15000, img: 'https://i.pinimg.com/1200x/2b/59/b6/2b59b672b0e83a51ea27e78e6cf2649b.jpg', description: 'Pisang goreng renyah dengan taburan keju gurih.' },
-            { id: 12, name: 'Dimsum Ayam', category: 'Snack', price: 18000, img: 'https://images.unsplash.com/photo-1604632910793-c0601f361b34?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Dimsum ayam lembut dengan isian gurih di setiap gigitan.' }
-        ];
-
-        let cart = {};
-
-        function renderMenu(items) {
-            const menuGrid = document.getElementById('menuGrid');
-            menuGrid.innerHTML = '';
-            if (items.length === 0) {
-                menuGrid.innerHTML = '<p class="text-center text-gray-500 py-10">Menu tidak ditemukan.</p>';
-                return;
-            }
-
-            ['Coffee', 'Non-Coffee', 'Snack'].forEach(category => {
-                const categoryItems = items.filter(item => item.category === category);
-                if (!categoryItems.length) return;
-                let cards = '';
-                categoryItems.forEach(item => {
-                    const count = cart[item.id] || 0;
-                    cards += `
-                        <div class="bg-white rounded-2xl p-3 md:p-5 shadow-sm hover:shadow-md transition border border-[#E9DDCD] flex flex-col h-full">
-                            <img src="${item.img}" alt="${item.name}" class="w-full aspect-square object-cover rounded-xl mb-3 md:mb-4" loading="lazy">
-                            <div class="flex-grow">
-                                <h3 class="font-bold text-[#4A3728] text-sm md:text-lg mb-2">${item.name}</h3>
-                                <p class="text-xs md:text-sm text-[#5F5146] leading-relaxed mb-3">${item.description}</p>
-                                <p class="font-bold text-[#765640] text-sm md:text-base">Rp ${item.price.toLocaleString('id-ID')}</p>
-                            </div>
-                            <div class="mt-4 flex items-center justify-between border-t border-[#E9DDCD] pt-3">
-                                <button onclick="updateCart(${item.id}, -1)" aria-label="Kurangi ${item.name}" class="w-8 h-8 rounded-full bg-[#F8F1E7] text-[#765640] font-bold hover:bg-[#E9DDCD]">−</button>
-                                <span class="font-bold text-[#4A3728] text-sm" id="qty-${item.id}">${count}</span>
-                                <button onclick="updateCart(${item.id}, 1)" aria-label="Tambah ${item.name}" class="w-8 h-8 rounded-full bg-[#765640] text-white font-bold hover:bg-[#60432F]">+</button>
-                            </div>
-                        </div>`;
-                });
-                menuGrid.innerHTML += `
-                    <section>
-                        <div class="flex items-center gap-4 mb-5">
-                            <h3 class="text-2xl font-bold font-serif-custom text-[#4A3728]">${category}</h3>
-                            <div class="h-px flex-grow bg-[#D8C5B2]"></div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-3 md:gap-6">${cards}</div>
-                    </section>`;
-            });
-        }
-
-        function filterMenu(category) {
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.className = 'filter-btn bg-white text-[#765640] border border-[#765640] px-5 py-2 rounded-full text-sm font-semibold hover:bg-[#E9DDCD] transition';
-            });
-            event.target.className = 'filter-btn active bg-[#765640] text-white px-5 py-2 rounded-full text-sm font-semibold transition';
-
-            if(category === 'All') renderMenu(menuData);
-            else renderMenu(menuData.filter(item => item.category === category));
-        }
-
-        function searchMenu() {
-            const query = document.getElementById('searchInput').value.toLowerCase().trim();
-            renderMenu(menuData.filter(item => item.name.toLowerCase().includes(query) || item.description.toLowerCase().includes(query)));
-        }
-
-        function updateCart(itemId, change) {
-            if(!cart[itemId]) cart[itemId] = 0;
-            cart[itemId] += change;
-            if(cart[itemId] < 0) cart[itemId] = 0;
-
-            document.getElementById(`qty-${itemId}`).innerText = cart[itemId];
-            calculateTotal();
-        }
-
-        function calculateTotal() {
-            let totalItems = 0;
-            let totalPrice = 0;
-
-            menuData.forEach(item => {
-                if(cart[item.id] > 0) {
-                    totalItems += cart[item.id];
-                    totalPrice += (cart[item.id] * item.price);
-                }
-            });
-
-            const cartCount = document.getElementById('cartCount');
-            const cartTotal = document.getElementById('cartTotal');
-            const floatingCart = document.getElementById('floatingCart');
-            if (cartCount) cartCount.innerText = totalItems;
-            if (cartTotal) cartTotal.innerText = `Rp ${totalPrice.toLocaleString('id-ID')}`;
-            if (floatingCart) {
-                if (totalItems > 0) floatingCart.classList.remove('hidden');
-                else floatingCart.classList.add('hidden');
-            }
-        }
-
-        renderMenu(menuData);
-    </script>
-
-
+    // Initial Render
+    renderMenu();
+  </script>
 </body>
 </html>
