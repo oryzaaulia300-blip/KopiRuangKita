@@ -155,7 +155,86 @@
             </div>
         </section>
 
-     <!-- Tambahkan section menu disini  -->
+        <!-- MENU -->
+        <section id="menu" class="py-20 bg-[#F8F1E7]">
+            <div class="container mx-auto px-5 md:px-6">
+                <div class="text-center mb-12">
+                    <span class="text-[#765640] font-semibold tracking-widest uppercase text-sm">Pilihan Kami</span>
+                    <h2 class="text-3xl md:text-4xl font-bold font-serif-custom text-[#4A3728] mt-3 mb-4">Menu Kopi Ruang Kita</h2>
+                    <p class="text-[#5F5146] max-w-xl mx-auto">Temukan minuman dan camilan favoritmu untuk menemani setiap cerita.</p>
+                </div>
+                <div class="max-w-md mx-auto mb-12">
+                    <input id="searchInput" type="search" oninput="searchMenu()" placeholder="Cari menu favoritmu..." class="w-full px-5 py-3 rounded-full bg-white border border-[#E9DDCD] text-[#4A3728] focus:outline-none focus:border-[#765640]">
+                </div>
+                <div id="menuGrid" class="space-y-14"></div>
+            </div>
+        </section>
+
+        <!-- PROMO SPESIAL -->
+        <section id="promo" class="py-20 bg-white">
+            <div class="container mx-auto px-5 md:px-6">
+                <div class="text-center mb-12">
+                    <span class="text-[#765640] font-semibold tracking-widest uppercase text-sm">Penawaran Menarik</span>
+                    <h2 class="text-3xl md:text-4xl font-bold font-serif-custom text-[#4A3728] mt-3 mb-4">PROMO SPESIAL!</h2>
+                    <p class="text-[#5F5146] max-w-xl mx-auto">Ada lebih banyak alasan untuk mampir dan menikmati waktu di Kopi Ruang Kita.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                    <!-- Promo Bundling -->
+                    <article class="bg-[#F8F1E7] rounded-2xl overflow-hidden border border-[#E9DDCD] shadow-sm hover:shadow-md transition flex flex-col">
+                        <div class="bg-[#765640] text-white px-5 py-3 flex items-center justify-between">
+                            <span class="text-xs font-bold tracking-widest uppercase">Promo Bundling</span>
+                            <span class="text-xl">☕</span>
+                        </div>
+                        <img src="https://i.pinimg.com/1200x/9b/a9/12/9ba912a184bba875c88ec7d33391ebf4.jpg" alt="Paket Nyore Kopi Susu Gula Aren dan Roti Bakar Coklat" class="w-full aspect-square object-cover">
+                        <div class="p-6 flex flex-col flex-grow">
+                            <span class="inline-block self-start bg-white text-[#765640] text-xs font-bold px-3 py-1 rounded-full mb-3">PAKET NYORE</span>
+                            <h3 class="text-xl font-bold font-serif-custom text-[#4A3728] mb-3">Teman Santai Sore</h3>
+                            <p class="text-sm text-[#5F5146] leading-relaxed mb-4">Nikmati Kopi Susu Gula Aren dan Roti Bakar Coklat dalam satu paket hemat untuk menemani waktu santaimu.</p>
+                            <div class="mt-auto border-t border-[#E9DDCD] pt-4">
+                                <p class="text-sm text-[#5F5146]">Harga normal <span class="line-through">Rp34.000</span></p>
+                                <p class="text-2xl font-bold text-[#765640]">Rp29.000</p>
+                                <p class="text-xs text-[#5F5146] mt-1">Hemat Rp5.000 untuk setiap Paket Nyore.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Promo BOGO -->
+                    <article class="bg-[#F8F1E7] rounded-2xl overflow-hidden border border-[#E9DDCD] shadow-sm hover:shadow-md transition flex flex-col">
+                        <div class="bg-[#765640] text-white px-5 py-3 flex items-center justify-between">
+                            <span class="text-xs font-bold tracking-widest uppercase">Buy 1 Get 1</span>
+                            <span class="text-xl">🎉</span>
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow">
+                            <span class="inline-block self-start bg-white text-[#765640] text-xs font-bold px-3 py-1 rounded-full mb-3">HAPPY HOUR</span>
+                            <h3 class="text-xl font-bold font-serif-custom text-[#4A3728] mb-3">Beli 1, Gratis 1</h3>
+                            <p class="text-sm text-[#5F5146] leading-relaxed mb-4">Pesan satu minuman pilihan dan dapatkan satu minuman gratis selama periode Happy Hour berlangsung.</p>
+                            <div class="mt-auto border-t border-[#E9DDCD] pt-4">
+                                <p class="text-2xl font-bold text-[#765640]">13.00–15.00</p>
+                                <p class="text-xs text-[#5F5146] mt-1">Setiap hari selama jam Happy Hour. Syarat dan pilihan minuman mengikuti ketentuan promo.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Promo Senin -->
+                    <article class="bg-[#F8F1E7] rounded-2xl overflow-hidden border border-[#E9DDCD] shadow-sm hover:shadow-md transition flex flex-col">
+                        <div class="bg-[#765640] text-white px-5 py-3 flex items-center justify-between">
+                            <span class="text-xs font-bold tracking-widest uppercase">Promo Mingguan</span>
+                            <span class="text-xl">✨</span>
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow">
+                            <span class="inline-block self-start bg-white text-[#765640] text-xs font-bold px-3 py-1 rounded-full mb-3">MONDAY DEAL</span>
+                            <h3 class="text-xl font-bold font-serif-custom text-[#4A3728] mb-3">Senin Lebih Hemat</h3>
+                            <p class="text-sm text-[#5F5146] leading-relaxed mb-4">Awali minggu dengan menikmati menu favoritmu dan dapatkan potongan harga 10% setiap hari Senin.</p>
+                            <div class="mt-auto border-t border-[#E9DDCD] pt-4">
+                                <p class="text-3xl font-bold text-[#765640]">DISKON 10%</p>
+                                <p class="text-xs text-[#5F5146] mt-1">Berlaku setiap hari Senin sesuai syarat dan ketentuan promo.</p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
 
     </main>
 
@@ -293,18 +372,18 @@
     <!-- LOGIKA JAVASCRIPT UNTUK MENU & KASIR -->
     <script>
         const menuData = [
-            { id: 1, name: 'Kopi Susu Gula Aren', category: 'Coffee', price: 18000, img: 'https://images.unsplash.com/photo-1599305090598-fe179d501227?w=500&q=80' },
-            { id: 2, name: 'Americano', category: 'Coffee', price: 15000, img: 'https://images.unsplash.com/photo-1551030173-122aabc4489c?w=500&q=80' },
-            { id: 3, name: 'Cafe Latte', category: 'Coffee', price: 22000, img: 'https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?w=500&q=80' },
-            { id: 4, name: 'Caramel Macchiato', category: 'Coffee', price: 25000, img: 'https://images.unsplash.com/photo-1485808191679-5f86510681a2?w=500&q=80' },
-            { id: 5, name: 'Matcha Latte', category: 'Non-Coffee', price: 22000, img: 'https://images.unsplash.com/photo-1515823662972-da6a2e4d3002?w=500&q=80' },
-            { id: 6, name: 'Taro Latte', category: 'Non-Coffee', price: 20000, img: 'https://images.unsplash.com/photo-1626074961596-f94dd706b45a?w=500&q=80' },
-            { id: 7, name: 'Red Velvet Latte', category: 'Non-Coffee', price: 22000, img: 'https://images.unsplash.com/photo-1611162458324-aae1eb4129a4?w=500&q=80' },
-            { id: 8, name: 'Lychee Tea', category: 'Non-Coffee', price: 18000, img: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500&q=80' },
-            { id: 9, name: 'French Fries', category: 'Snack', price: 15000, img: 'https://images.unsplash.com/photo-1576107232684-1279f390859f?w=500&q=80' },
-            { id: 10, name: 'Roti Bakar Coklat', category: 'Snack', price: 16000, img: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&q=80' },
-            { id: 11, name: 'Pisang Goreng Keju', category: 'Snack', price: 15000, img: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=500&q=80' },
-            { id: 12, name: 'Dimsum Ayam', category: 'Snack', price: 18000, img: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=500&q=80' }
+            { id: 1, name: 'Kopi Susu Gula Aren', category: 'Coffee', price: 18000, img: 'https://i.pinimg.com/736x/f0/49/5b/f0495b2d4ee979ac4068f4c61a57397b.jpg', description: 'Perpaduan espresso, susu creamy, dan manis legit gula aren.' },
+            { id: 2, name: 'Americano', category: 'Coffee', price: 15000, img: 'https://images.unsplash.com/photo-1551030173-122aabc4489c?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Kopi hitam dengan rasa bold dan aroma espresso yang khas.' },
+            { id: 3, name: 'Cafe Latte', category: 'Coffee', price: 22000, img: 'https://images.unsplash.com/photo-1502462041640-b3d7e50d0662?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Espresso lembut berpadu dengan susu steamed yang creamy.' },
+            { id: 4, name: 'Caramel Macchiato', category: 'Coffee', price: 25000, img: 'https://i.pinimg.com/736x/c3/0e/0e/c30e0ecc2b17ff4fa571f5963c70519b.jpg', description: 'Minuman kopi susu dengan sentuhan manis saus karamel.' },
+            { id: 5, name: 'Matcha Latte', category: 'Non-Coffee', price: 22000, img: 'https://plus.unsplash.com/premium_photo-1695151556198-6b21eae6215d?q=80&w=783&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Matcha dengan rasa khas yang berpadu dengan susu lembut.' },
+            { id: 6, name: 'Taro Latte', category: 'Non-Coffee', price: 20000, img: 'https://i.pinimg.com/736x/ac/a2/0d/aca20d8451b60b70937f98d1c27e4e5f.jpg', description: 'Minuman taro creamy dengan rasa manis yang menenangkan.' },
+            { id: 7, name: 'Red Velvet Latte', category: 'Non-Coffee', price: 22000, img: 'https://i.pinimg.com/736x/1c/b0/45/1cb0450d33404c6383a1d44003d42e77.jpg', description: 'Latte red velvet lembut dengan cita rasa manis yang unik.' },
+            { id: 8, name: 'Lychee Tea', category: 'Non-Coffee', price: 18000, img: 'https://i.pinimg.com/736x/2c/58/8b/2c588b17c03c59becba4cc8baf7d0ba9.jpg', description: 'Teh segar dengan aroma dan rasa manis buah leci.' },
+            { id: 9, name: 'French Fries', category: 'Snack', price: 15000, img: 'https://plus.unsplash.com/premium_photo-1683121324474-83460636b0ed?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Kentang goreng renyah yang cocok menemani waktu santai.' },
+            { id: 10, name: 'Roti Bakar Coklat', category: 'Snack', price: 16000, img: 'https://i.pinimg.com/1200x/35/57/e2/3557e272e25b7180fd1e20ba4da79c8e.jpg', description: 'Roti bakar hangat dengan isian cokelat manis yang lumer.' },
+            { id: 11, name: 'Pisang Goreng Keju', category: 'Snack', price: 15000, img: 'https://i.pinimg.com/1200x/2b/59/b6/2b59b672b0e83a51ea27e78e6cf2649b.jpg', description: 'Pisang goreng renyah dengan taburan keju gurih.' },
+            { id: 12, name: 'Dimsum Ayam', category: 'Snack', price: 18000, img: 'https://images.unsplash.com/photo-1604632910793-c0601f361b34?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Dimsum ayam lembut dengan isian gurih di setiap gigitan.' }
         ];
 
         let cart = {};
@@ -312,29 +391,40 @@
         function renderMenu(items) {
             const menuGrid = document.getElementById('menuGrid');
             menuGrid.innerHTML = '';
-            
             if (items.length === 0) {
-                menuGrid.innerHTML = '<p class="col-span-full text-center text-gray-500 py-10">Menu tidak ditemukan.</p>';
+                menuGrid.innerHTML = '<p class="text-center text-gray-500 py-10">Menu tidak ditemukan.</p>';
                 return;
             }
 
-            items.forEach(item => {
-                const count = cart[item.id] || 0;
+            ['Coffee', 'Non-Coffee', 'Snack'].forEach(category => {
+                const categoryItems = items.filter(item => item.category === category);
+                if (!categoryItems.length) return;
+                let cards = '';
+                categoryItems.forEach(item => {
+                    const count = cart[item.id] || 0;
+                    cards += `
+                        <div class="bg-white rounded-2xl p-3 md:p-5 shadow-sm hover:shadow-md transition border border-[#E9DDCD] flex flex-col h-full">
+                            <img src="${item.img}" alt="${item.name}" class="w-full aspect-square object-cover rounded-xl mb-3 md:mb-4" loading="lazy">
+                            <div class="flex-grow">
+                                <h3 class="font-bold text-[#4A3728] text-sm md:text-lg mb-2">${item.name}</h3>
+                                <p class="text-xs md:text-sm text-[#5F5146] leading-relaxed mb-3">${item.description}</p>
+                                <p class="font-bold text-[#765640] text-sm md:text-base">Rp ${item.price.toLocaleString('id-ID')}</p>
+                            </div>
+                            <div class="mt-4 flex items-center justify-between border-t border-[#E9DDCD] pt-3">
+                                <button onclick="updateCart(${item.id}, -1)" aria-label="Kurangi ${item.name}" class="w-8 h-8 rounded-full bg-[#F8F1E7] text-[#765640] font-bold hover:bg-[#E9DDCD]">−</button>
+                                <span class="font-bold text-[#4A3728] text-sm" id="qty-${item.id}">${count}</span>
+                                <button onclick="updateCart(${item.id}, 1)" aria-label="Tambah ${item.name}" class="w-8 h-8 rounded-full bg-[#765640] text-white font-bold hover:bg-[#60432F]">+</button>
+                            </div>
+                        </div>`;
+                });
                 menuGrid.innerHTML += `
-                    <div class="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition border border-[#E9DDCD] flex flex-col h-full">
-                        <img src="${item.img}" alt="${item.name}" class="w-full h-40 object-cover rounded-xl mb-4">
-                        <div class="flex-grow">
-                            <span class="text-xs font-bold text-[#765640] uppercase tracking-wider">${item.category}</span>
-                            <h3 class="font-bold text-[#4A3728] text-lg mt-1 mb-2">${item.name}</h3>
-                            <p class="font-semibold text-gray-700">Rp ${item.price.toLocaleString('id-ID')}</p>
+                    <section>
+                        <div class="flex items-center gap-4 mb-5">
+                            <h3 class="text-2xl font-bold font-serif-custom text-[#4A3728]">${category}</h3>
+                            <div class="h-px flex-grow bg-[#D8C5B2]"></div>
                         </div>
-                        <div class="mt-4 flex items-center justify-between border-t border-[#E9DDCD] pt-4">
-                            <button onclick="updateCart(${item.id}, -1)" class="w-8 h-8 rounded-full bg-[#F8F1E7] text-[#765640] font-bold hover:bg-[#E9DDCD]">-</button>
-                            <span class="font-bold text-[#4A3728] w-8 text-center" id="qty-${item.id}">${count}</span>
-                            <button onclick="updateCart(${item.id}, 1)" class="w-8 h-8 rounded-full bg-[#765640] text-white font-bold hover:bg-[#60432F]">+</button>
-                        </div>
-                    </div>
-                `;
+                        <div class="grid grid-cols-2 gap-3 md:gap-6">${cards}</div>
+                    </section>`;
             });
         }
 
@@ -349,8 +439,8 @@
         }
 
         function searchMenu() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            renderMenu(menuData.filter(item => item.name.toLowerCase().includes(query)));
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            renderMenu(menuData.filter(item => item.name.toLowerCase().includes(query) || item.description.toLowerCase().includes(query)));
         }
 
         function updateCart(itemId, change) {
@@ -373,20 +463,20 @@
                 }
             });
 
-            document.getElementById('cartCount').innerText = totalItems;
-            document.getElementById('cartTotal').innerText = `Rp ${totalPrice.toLocaleString('id-ID')}`;
-
+            const cartCount = document.getElementById('cartCount');
+            const cartTotal = document.getElementById('cartTotal');
             const floatingCart = document.getElementById('floatingCart');
-            if(totalItems > 0) floatingCart.classList.remove('hidden');
-            else floatingCart.classList.add('hidden');
+            if (cartCount) cartCount.innerText = totalItems;
+            if (cartTotal) cartTotal.innerText = `Rp ${totalPrice.toLocaleString('id-ID')}`;
+            if (floatingCart) {
+                if (totalItems > 0) floatingCart.classList.remove('hidden');
+                else floatingCart.classList.add('hidden');
+            }
         }
 
         renderMenu(menuData);
     </script>
 
-
-</body>
-</html>
 
 </body>
 </html>
