@@ -5,6 +5,15 @@ import logoImage from './assets/LogoKopiRuangKita.jpeg';
 function App() {
   const [cart, setCart] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
+
+  
+  // State untuk filter kategori menu // 1
+  const [activeCategory, setActiveCategory] = useState('All');
+
+  // State untuk modal promo // 2
+  const [showModal, setShowModal] = useState(false);
+  const [selectedPromo, setSelectedPromo] = useState(null);
+
   
   // State khusus untuk Modal Login
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -36,10 +45,19 @@ function App() {
     });
   };
 
-  const filteredMenu = menuData.filter(item => 
-    item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    item.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  
+  // Filter menu berdasarkan pencarian dan kategori // 3
+  const filteredMenu = menuData.filter(item => {
+    const matchesSearch =
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesCategory =
+      activeCategory === 'All' || item.category === activeCategory;
+
+    return matchesSearch && matchesCategory;
+  });
+
 
   const handleLoginSubmit = (e) => {
     e.preventDefault();
@@ -51,6 +69,12 @@ function App() {
     setUsername('');
     setPassword('');
     setIsLoginOpen(false);
+  };
+
+  // Membuka modal dengan promo yang dipilih / 4
+  const openPromoModal = (promo) => {
+    setSelectedPromo(promo);
+    setShowModal(true);
   };
 
   return (
@@ -204,6 +228,57 @@ function App() {
       )}
 
       <main>
+        {/* Modal detail promo */}
+        {showModal && selectedPromo && (
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+            onClick={() => setShowModal(false)}
+          >
+            <div
+              className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl animate-[fadeIn_0.3s_ease-out]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-start justify-between gap-4 mb-4">
+                <span className="rounded-full bg-[#F8F1E7] px-3 py-1 text-xs font-bold text-[#765640]">
+                  {selectedPromo.label}
+                </span>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="text-xl font-bold text-gray-500 hover:text-[#4A3728]"
+                  aria-label="Tutup modal"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <h3 className="text-2xl font-bold font-serif-custom text-[#4A3728] mb-3">
+                {selectedPromo.title}
+              </h3>
+
+              <p className="text-sm leading-relaxed text-[#5F5146] mb-5">
+                {selectedPromo.description}
+              </p>
+
+              {selectedPromo.normalPrice && (
+                <p className="text-sm text-gray-500 line-through">
+                  Harga normal {selectedPromo.normalPrice}
+                </p>
+              )}
+
+              <p className="text-2xl font-bold text-[#765640] mb-6">
+                {selectedPromo.price}
+              </p>
+
+              <button
+                onClick={() => setShowModal(false)}
+                className="w-full rounded-xl bg-[#765640] py-3 font-semibold text-white transition hover:bg-[#60432F]"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* HOME / HERO SECTION */}
         <section id="home" className="min-h-screen flex items-center bg-[#F8F1E7]">
           <div className="container mx-auto px-6 py-16">
@@ -295,42 +370,93 @@ function App() {
                 className="w-full px-5 py-3 rounded-full bg-white border border-[#E9DDCD] text-[#4A3728] focus:outline-none focus:border-[#765640]" 
               />
             </div>
+          {/* Tombol filter kategori menu */}
+                <div className="flex flex-wrap justify-center gap-3 mb-10">
+                  {['All', 'Coffee', 'Non-Coffee', 'Snack'].map(category => (
+                    <button
+                      key={category}
+                      onClick={() => setActiveCategory(category)}
+                      className={`px-5 py-2 rounded-full font-semibold transition ${
+                        activeCategory === category
+                          ? 'bg-[#765640] text-white'
+                          : 'bg-white text-[#765640] border border-[#E9DDCD] hover:bg-[#E9DDCD]'
+                      }`}
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
 
-            <div className="space-y-14">
-              {['Coffee', 'Non-Coffee', 'Snack'].map(category => {
-                const categoryItems = filteredMenu.filter(item => item.category === category);
-                if (categoryItems.length === 0) return null;
+                <div className="space-y-14">
+                  {['Coffee', 'Non-Coffee', 'Snack'].map(category => {
+                    const categoryItems = filteredMenu.filter(
+                      item => item.category === category
+                    );
 
-                return (
-                  <section key={category}>
-                    <div className="flex items-center gap-4 mb-5">
-                      <h3 className="text-2xl font-bold font-serif-custom text-[#4A3728]">{category}</h3>
-                      <div className="h-px flex-grow bg-[#D8C5B2]"></div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                      {categoryItems.map(item => {
-                        const count = cart[item.id] || 0;
-                        return (
-                          <div key={item.id} className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition border border-[#E9DDCD] flex flex-col h-full">
-                            <img src={item.img} alt={item.name} className="w-full h-48 object-cover rounded-xl mb-4" loading="lazy" />
-                            <div className="flex-grow">
-                              <h3 className="font-bold text-[#4A3728] text-lg mb-2">{item.name}</h3>
-                              <p className="text-sm text-[#5F5146] leading-relaxed mb-3">{item.description}</p>
-                              <p className="font-bold text-[#765640] text-base">Rp {item.price.toLocaleString('id-ID')}</p>
-                            </div>
-                            <div className="mt-4 flex items-center justify-between border-t border-[#E9DDCD] pt-3">
-                              <button onClick={() => updateCart(item.id, -1)} className="w-8 h-8 rounded-full bg-[#F8F1E7] text-[#765640] font-bold hover:bg-[#E9DDCD]">−</button>
-                              <span className="font-bold text-[#4A3728] text-sm">{count}</span>
-                              <button onClick={() => updateCart(item.id, 1)} className="w-8 h-8 rounded-full bg-[#765640] text-white font-bold hover:bg-[#60432F]">+</button>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </section>
-                );
-              })}
-            </div>
+                    if (categoryItems.length === 0) return null;
+
+                    return (
+                      <section key={category}>
+                        <div className="flex items-center gap-4 mb-5">
+                          <h3 className="text-2xl font-bold font-serif-custom text-[#4A3728]">
+                            {category}
+                          </h3>
+                          <div className="h-px flex-grow bg-[#D8C5B2]"></div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                          {categoryItems.map(item => {
+                            const count = cart[item.id] || 0;
+
+                            return (
+                              <div
+                                key={item.id}
+                                className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition border border-[#E9DDCD] flex flex-col h-full"
+                              >
+                                <img
+                                  src={item.img}
+                                  alt={item.name}
+                                  className="w-full h-48 object-cover rounded-xl mb-4"
+                                  loading="lazy"
+                                />
+
+                                <div className="flex-grow">
+                                  <h3 className="font-bold text-[#4A3728] text-lg mb-2">
+                                    {item.name}
+                                  </h3>
+                                  <p className="text-sm text-[#5F5146] leading-relaxed mb-3">
+                                    {item.description}
+                                  </p>
+                                  <p className="font-bold text-[#765640] text-base">
+                                    Rp {item.price.toLocaleString('id-ID')}
+                                  </p>
+                                </div>
+
+                                <div className="mt-4 flex items-center justify-between border-t border-[#E9DDCD] pt-3">
+                                  <button
+                                    onClick={() => updateCart(item.id, -1)}
+                                    className="w-8 h-8 rounded-full bg-[#F8F1E7] text-[#765640] font-bold hover:bg-[#E9DDCD]"
+                                  >
+                                    −
+                                  </button>
+                                  <span className="font-bold text-[#4A3728] text-sm">
+                                    {count}
+                                  </span>
+                                  <button
+                                    onClick={() => updateCart(item.id, 1)}
+                                    className="w-8 h-8 rounded-full bg-[#765640] text-white font-bold hover:bg-[#60432F]"
+                                  >
+                                    +
+                                  </button>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </section>
+                    );
+                  })}
+                </div>
           </div>
         </section>
 
@@ -344,7 +470,17 @@ function App() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-              <article className="bg-[#F8F1E7] rounded-2xl overflow-hidden border border-[#E9DDCD] shadow-sm hover:shadow-md transition flex flex-col">
+              
+              <article
+                    onClick={() => openPromoModal({
+                      title: 'Teman Santai Sore',
+                      label: 'PAKET NYORE',
+                      description: 'Nikmati Kopi Susu Gula Aren dan Roti Bakar Coklat dalam satu paket hemat.',
+                      price: 'Rp29.000',
+                      normalPrice: 'Rp34.000'
+                    })}
+                    className="cursor-pointer bg-[#F8F1E7] rounded-2xl overflow-hidden border border-[#E9DDCD] shadow-sm hover:shadow-md transition flex flex-col"
+                  >
                 <div className="bg-[#765640] text-white px-5 py-3 flex items-center justify-between">
                   <span className="text-xs font-bold tracking-widest uppercase">Promo Bundling</span>
                   <span className="text-xl">☕</span>
@@ -361,7 +497,16 @@ function App() {
                 </div>
               </article>
 
-              <article className="bg-[#F8F1E7] rounded-2xl overflow-hidden border border-[#E9DDCD] shadow-sm hover:shadow-md transition flex flex-col">
+              
+              <article
+                onClick={() => openPromoModal({
+                  title: 'Beli 1, Gratis 1',
+                  label: 'HAPPY HOUR',
+                  description: 'Pesan satu minuman pilihan dan dapatkan satu minuman gratis selama Happy Hour.',
+                  price: '13.00–15.00'
+                })}
+                className="cursor-pointer bg-[#F8F1E7] rounded-2xl overflow-hidden border border-[#E9DDCD] shadow-sm hover:shadow-md transition flex flex-col"
+              >
                 <div className="bg-[#765640] text-white px-5 py-3 flex items-center justify-between">
                   <span className="text-xs font-bold tracking-widest uppercase">Buy 1 Get 1</span>
                   <span className="text-xl">🎉</span>
@@ -377,7 +522,16 @@ function App() {
                 </div>
               </article>
 
-              <article className="bg-[#F8F1E7] rounded-2xl overflow-hidden border border-[#E9DDCD] shadow-sm hover:shadow-md transition flex flex-col">
+              
+              <article
+                onClick={() => openPromoModal({
+                  title: 'Senin Lebih Hemat',
+                  label: 'MONDAY DEAL',
+                  description: 'Nikmati menu favoritmu dan dapatkan diskon 10%.',
+                  price: 'DISKON 10%'
+                })}
+                className="cursor-pointer bg-[#F8F1E7] rounded-2xl overflow-hidden border border-[#E9DDCD] shadow-sm hover:shadow-md transition flex flex-col"
+              >
                 <div className="bg-[#765640] text-white px-5 py-3 flex items-center justify-between">
                   <span className="text-xs font-bold tracking-widest uppercase">Promo Mingguan</span>
                   <span className="text-xl">✨</span>
