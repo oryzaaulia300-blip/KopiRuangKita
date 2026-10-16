@@ -2,48 +2,54 @@ import React, { useState } from 'react';
 import './index.css';
 import logoImage from './assets/LogoKopiRuangKita.jpeg';
 
+// Import komponen modal yang terpisah
+import OrderModal from './components/OrderModal';
+import ReceiptModal from './components/ReceiptModal';
+
+// Data Menu ditaruh langsung di App.jsx
+const menuData = [
+  { id: 1, name: 'Kopi Susu Gula Aren', category: 'Coffee', price: 18000, img: 'https://i.pinimg.com/736x/f0/49/5b/f0495b2d4ee979ac4068f4c61a57397b.jpg', description: 'Perpaduan espresso, susu creamy, dan manis legit gula aren.' },
+  { id: 2, name: 'Americano', category: 'Coffee', price: 15000, img: 'https://images.unsplash.com/photo-1551030173-122aabc4489c?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Kopi hitam dengan rasa bold dan aroma espresso yang khas.' },
+  { id: 3, name: 'Cafe Latte', category: 'Coffee', price: 22000, img: 'https://images.unsplash.com/photo-1502462041640-b3d7e50d0662?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Espresso lembut berpadu dengan susu steamed yang creamy.' },
+  { id: 4, name: 'Caramel Macchiato', category: 'Coffee', price: 25000, img: 'https://i.pinimg.com/736x/c3/0e/0e/c30e0ecc2b17ff4fa571f5963c70519b.jpg', description: 'Minuman kopi susu dengan sentuhan manis saus karamel.' },
+  { id: 5, name: 'Matcha Latte', category: 'Non-Coffee', price: 22000, img: 'https://plus.unsplash.com/premium_photo-1695151556198-6b21eae6215d?q=80&w=783&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Matcha dengan rasa khas yang berpadu dengan susu lembut.' },
+  { id: 6, name: 'Taro Latte', category: 'Non-Coffee', price: 20000, img: 'https://i.pinimg.com/736x/ac/a2/0d/aca20d8451b60b70937f98d1c27e4e5f.jpg', description: 'Minuman taro creamy dengan rasa manis yang menenangkan.' },
+  { id: 7, name: 'Red Velvet Latte', category: 'Non-Coffee', price: 22000, img: 'https://i.pinimg.com/736x/1c/b0/45/1cb0450d33404c6383a1d44003d42e77.jpg', description: 'Latte red velvet lembut dengan cita rasa manis yang unik.' },
+  { id: 8, name: 'Lychee Tea', category: 'Non-Coffee', price: 18000, img: 'https://i.pinimg.com/736x/2c/58/8b/2c588b17c03c59becba4cc8baf7d0ba9.jpg', description: 'Teh segar dengan aroma dan rasa manis buah leci.' },
+  { id: 9, name: 'French Fries', category: 'Snack', price: 15000, img: 'https://plus.unsplash.com/premium_photo-1683121324474-83460636b0ed?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Kentang goreng renyah yang cocok menemani waktu santai.' },
+  { id: 10, name: 'Roti Bakar Coklat', category: 'Snack', price: 16000, img: 'https://i.pinimg.com/1200x/35/57/e2/3557e272e25b7180fd1e20ba4da79c8e.jpg', description: 'Roti bakar hangat dengan isian cokelat manis yang lumer.' },
+  { id: 11, name: 'Pisang Goreng Keju', category: 'Snack', price: 15000, img: 'https://i.pinimg.com/1200x/2b/59/b6/2b59b672b0e83a51ea27e78e6cf2649b.jpg', description: 'Pisang goreng renyah dengan taburan keju gurih.' },
+  { id: 12, name: 'Dimsum Ayam', category: 'Snack', price: 18000, img: 'https://images.unsplash.com/photo-1604632910793-c0601f361b34?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Dimsum ayam lembut dengan isian gurih di setiap gigitan.' }
+];
+
 function App() {
   const [cart, setCart] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
-  
-  // State untuk filter kategori menu // 1
   const [activeCategory, setActiveCategory] = useState('All');
 
-  // State untuk modal promo // 2
+  // State Modal Promo
   const [showModal, setShowModal] = useState(false);
   const [selectedPromo, setSelectedPromo] = useState(null);
 
-  // State khusus untuk Modal Login
+  // State Modal Login Staf
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  // State untuk Menu Hamburger (Mobile)
+  // State Hamburger Menu
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // State untuk Form Hubungi Kami
-  const [contactForm, setContactForm] = useState({
-    nama: '',
-    noHp: '',
-    pesan: ''
-  });
+  // State Modal Pemesanan & Pembayaran
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [customerName, setCustomerName] = useState('');
+  const [tableNumber, setTableNumber] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('qris');
+  const [receiptData, setReceiptData] = useState(null);
+
+  // State Form Kontak
+  const [contactForm, setContactForm] = useState({ nama: '', noHp: '', pesan: '' });
   const [contactError, setContactError] = useState('');
   const [contactSuccess, setContactSuccess] = useState('');
-  
-  const menuData = [
-    { id: 1, name: 'Kopi Susu Gula Aren', category: 'Coffee', price: 18000, img: 'https://i.pinimg.com/736x/f0/49/5b/f0495b2d4ee979ac4068f4c61a57397b.jpg', description: 'Perpaduan espresso, susu creamy, dan manis legit gula aren.' },
-    { id: 2, name: 'Americano', category: 'Coffee', price: 15000, img: 'https://images.unsplash.com/photo-1551030173-122aabc4489c?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Kopi hitam dengan rasa bold dan aroma espresso yang khas.' },
-    { id: 3, name: 'Cafe Latte', category: 'Coffee', price: 22000, img: 'https://images.unsplash.com/photo-1502462041640-b3d7e50d0662?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Espresso lembut berpadu dengan susu steamed yang creamy.' },
-    { id: 4, name: 'Caramel Macchiato', category: 'Coffee', price: 25000, img: 'https://i.pinimg.com/736x/c3/0e/0e/c30e0ecc2b17ff4fa571f5963c70519b.jpg', description: 'Minuman kopi susu dengan sentuhan manis saus karamel.' },
-    { id: 5, name: 'Matcha Latte', category: 'Non-Coffee', price: 22000, img: 'https://plus.unsplash.com/premium_photo-1695151556198-6b21eae6215d?q=80&w=783&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Matcha dengan rasa khas yang berpadu dengan susu lembut.' },
-    { id: 6, name: 'Taro Latte', category: 'Non-Coffee', price: 20000, img: 'https://i.pinimg.com/736x/ac/a2/0d/aca20d8451b60b70937f98d1c27e4e5f.jpg', description: 'Minuman taro creamy dengan rasa manis yang menenangkan.' },
-    { id: 7, name: 'Red Velvet Latte', category: 'Non-Coffee', price: 22000, img: 'https://i.pinimg.com/736x/1c/b0/45/1cb0450d33404c6383a1d44003d42e77.jpg', description: 'Latte red velvet lembut dengan cita rasa manis yang unik.' },
-    { id: 8, name: 'Lychee Tea', category: 'Non-Coffee', price: 18000, img: 'https://i.pinimg.com/736x/2c/58/8b/2c588b17c03c59becba4cc8baf7d0ba9.jpg', description: 'Teh segar dengan aroma dan rasa manis buah leci.' },
-    { id: 9, name: 'French Fries', category: 'Snack', price: 15000, img: 'https://plus.unsplash.com/premium_photo-1683121324474-83460636b0ed?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Kentang goreng renyah yang cocok menemani waktu santai.' },
-    { id: 10, name: 'Roti Bakar Coklat', category: 'Snack', price: 16000, img: 'https://i.pinimg.com/1200x/35/57/e2/3557e272e25b7180fd1e20ba4da79c8e.jpg', description: 'Roti bakar hangat dengan isian cokelat manis yang lumer.' },
-    { id: 11, name: 'Pisang Goreng Keju', category: 'Snack', price: 15000, img: 'https://i.pinimg.com/1200x/2b/59/b6/2b59b672b0e83a51ea27e78e6cf2649b.jpg', description: 'Pisang goreng renyah dengan taburan keju gurih.' },
-    { id: 12, name: 'Dimsum Ayam', category: 'Snack', price: 18000, img: 'https://images.unsplash.com/photo-1604632910793-c0601f361b34?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Dimsum ayam lembut dengan isian gurih di setiap gigitan.' }
-  ];
 
   const updateCart = (itemId, change) => {
     setCart(prev => {
@@ -52,19 +58,14 @@ function App() {
     });
   };
 
-  
-  // Filter menu berdasarkan pencarian dan kategori // 3
   const filteredMenu = menuData.filter(item => {
     const matchesSearch =
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.description.toLowerCase().includes(searchQuery.toLowerCase());
-
     const matchesCategory =
       activeCategory === 'All' || item.category === activeCategory;
-
     return matchesSearch && matchesCategory;
   });
-
 
   const handleLoginSubmit = (e) => {
     e.preventDefault();
@@ -78,13 +79,11 @@ function App() {
     setIsLoginOpen(false);
   };
 
-  // Membuka modal dengan promo yang dipilih / 4
   const openPromoModal = (promo) => {
     setSelectedPromo(promo);
     setShowModal(true);
   };
 
-  //Kalkulasi Keranjang
   const cartItems = menuData
     .filter(item => cart[item.id] > 0)
     .map(item => ({
@@ -94,10 +93,40 @@ function App() {
     }));
 
   const subtotalPrice = cartItems.reduce((acc, item) => acc + item.subtotal, 0);
-  const taxPrice = subtotalPrice * 0.1; // Pajak 10%
+  const taxPrice = subtotalPrice * 0.1;
   const grandTotalPrice = subtotalPrice + taxPrice;
 
-  // Handler & Validasi Form Kontak
+  const handleProcessOrder = (e) => {
+    e.preventDefault();
+
+    if (cartItems.length === 0) {
+      alert('Pilih minimal satu menu untuk dipesan!');
+      return;
+    }
+    if (!customerName.trim() || !tableNumber.trim()) {
+      alert('Nama dan Nomor Meja wajib diisi!');
+      return;
+    }
+
+    const orderData = {
+      orderId: 'KRK-' + Math.floor(100000 + Math.random() * 900000),
+      tanggal: new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }),
+      nama: customerName,
+      noMeja: tableNumber,
+      metode: paymentMethod.toUpperCase(),
+      items: [...cartItems],
+      subtotal: subtotalPrice,
+      pajak: taxPrice,
+      total: grandTotalPrice
+    };
+
+    setReceiptData(orderData);
+    setIsOrderModalOpen(false);
+    setCart({});
+    setCustomerName('');
+    setTableNumber('');
+  };
+
   const handleContactChange = (e) => {
     const { name, value } = e.target;
     setContactForm(prev => ({ ...prev, [name]: value }));
@@ -117,21 +146,18 @@ function App() {
     setContactError('');
     setContactForm({ nama: '', noHp: '', pesan: '' });
   };
-  
+
   return (
     <div className="bg-white text-gray-700 relative pb-24">
-    
       {/* NAVBAR UTAMA */}
-      <header className="bg-white text-[#4A3728] sticky top-0 z-50 shadow-sm border-b border-[#E9DDCD]">
+      <header className="bg-white text-[#4A3728] sticky top-0 z-40 shadow-sm border-b border-[#E9DDCD]">
         <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
-          
           <div className="flex items-center gap-3">
             <span className="text-2xl font-bold font-serif-custom tracking-wide text-[#4A3728]">
               Kopi Ruang Kita
             </span>
           </div>
 
-          {/* Menu Desktop */}
           <div className="hidden md:flex items-center space-x-8 font-medium text-[#5F5146]">
             <a href="#home" className="hover:text-[#765640] transition">Home</a>
             <a href="#tentang" className="hover:text-[#765640] transition">Tentang Kami</a>
@@ -148,12 +174,14 @@ function App() {
             >
               🔒 <span>Login Staf</span>
             </button>
-            <a href="#menu" className="bg-[#765640] hover:bg-[#60432F] text-white font-semibold px-5 py-2.5 rounded-full transition text-sm shadow-sm">
+            <button 
+              onClick={() => setIsOrderModalOpen(true)} 
+              className="bg-[#765640] hover:bg-[#60432F] text-white font-semibold px-5 py-2.5 rounded-full transition text-sm shadow-sm"
+            >
               Pesan Sekarang
-            </a>
+            </button>
           </div>
 
-          {/* Tombol Hamburger (Mobile) */}
           <button 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden text-2xl text-[#765640] focus:outline-none"
@@ -162,52 +190,15 @@ function App() {
           </button>
         </nav>
 
-        {/* Dropdown Menu untuk Mobile */}
         {isMobileMenuOpen && (
           <div className="md:hidden bg-[#F8F1E7] border-b border-[#E9DDCD] px-6 py-4 space-y-4 shadow-md">
             <div className="flex flex-col space-y-3 font-medium text-[#5F5146]">
-              <a 
-                href="#home" 
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="hover:text-[#765640] transition"
-              >
-                Home
-              </a>
-              <a 
-                href="#tentang" 
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="hover:text-[#765640] transition"
-              >
-                Tentang Kami
-              </a>
-              <a 
-                href="#menu" 
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="hover:text-[#765640] transition"
-              >
-                Menu
-              </a>
-              <a 
-                href="#keranjang" 
-                onClick={() => setIsMobileMenuOpen(false)} 
-                className="hover:text-[#765640] transition"
-                >
-                  Pesanan Anda
-              </a>
-              <a 
-                href="#promo" 
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="hover:text-[#765640] transition"
-              >
-                Promo
-              </a>
-              <a 
-                href="#kontak" 
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="hover:text-[#765640] transition"
-              >
-                Kontak
-              </a>
+              <a href="#home" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-[#765640] transition">Home</a>
+              <a href="#tentang" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-[#765640] transition">Tentang Kami</a>
+              <a href="#menu" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-[#765640] transition">Menu</a>
+              <a href="#keranjang" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-[#765640] transition">Pesanan Anda</a>
+              <a href="#promo" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-[#765640] transition">Promo</a>
+              <a href="#kontak" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-[#765640] transition">Kontak</a>
             </div>
             
             <div className="pt-2 border-t border-[#E9DDCD] flex flex-col gap-3">
@@ -217,20 +208,44 @@ function App() {
               >
                 🔒 Login Staf
               </button>
-              <a 
-                href="#menu" 
-                onClick={() => setIsMobileMenuOpen(false)}
+              <button 
+                onClick={() => { setIsMobileMenuOpen(false); setIsOrderModalOpen(true); }}
                 className="w-full text-center bg-[#765640] text-white font-semibold py-2.5 rounded-full text-sm shadow-sm"
               >
                 Pesan Sekarang
-              </a>
+              </button>
             </div>
           </div>
         )}
       </header>
 
-      {/* MODAL POP-UP LOGIN */}
-      
+      {/* COMPONENT MODAL PEMESANAN & PEMBAYARAN */}
+      <OrderModal 
+        isOpen={isOrderModalOpen}
+        onClose={() => setIsOrderModalOpen(false)}
+        menuData={menuData}
+        cart={cart}
+        updateCart={updateCart}
+        customerName={customerName}
+        setCustomerName={setCustomerName}
+        tableNumber={tableNumber}
+        setTableNumber={setTableNumber}
+        paymentMethod={paymentMethod}
+        setPaymentMethod={setPaymentMethod}
+        handleProcessOrder={handleProcessOrder}
+        cartItems={cartItems}
+        subtotalPrice={subtotalPrice}
+        taxPrice={taxPrice}
+        grandTotalPrice={grandTotalPrice}
+      />
+
+      {/* COMPONENT MODAL STRUK */}
+      <ReceiptModal 
+        receiptData={receiptData}
+        onClose={() => setReceiptData(null)}
+      />
+
+      {/* MODAL LOGIN STAF */}
       {isLoginOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-xl border border-[#E9DDCD] relative">
@@ -277,7 +292,7 @@ function App() {
       )}
 
       <main>
-        {/* Modal detail promo */}
+        {/* MODAL PROMO */}
         {showModal && selectedPromo && (
           <div
             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
@@ -294,7 +309,6 @@ function App() {
                 <button
                   onClick={() => setShowModal(false)}
                   className="text-xl font-bold text-gray-500 hover:text-[#4A3728]"
-                  aria-label="Tutup modal"
                 >
                   ✕
                 </button>
@@ -328,11 +342,10 @@ function App() {
           </div>
         )}
 
-        {/* HOME / HERO SECTION */}
+        {/* HERO SECTION */}
         <section id="home" className="min-h-screen flex items-center bg-[#F8F1E7]">
           <div className="container mx-auto px-6 py-16">
             <div className="grid md:grid-cols-2 gap-10 items-center">
-              
               <div className="flex flex-col items-center text-center">
                 <div className="mb-6 flex justify-center">
                   <img 
@@ -355,9 +368,14 @@ function App() {
                   Nikmati kopi pilihan dengan suasana nyaman untuk berkumpul, bekerja, dan berbagi cerita bersama orang-orang tersayang.
                 </p>
                 
-                <a href="#menu" className="inline-block bg-[#765640] hover:bg-[#60432F] text-white font-semibold px-8 py-3.5 rounded-full shadow-sm transition">
-                  Lihat Menu
-                </a>
+                <div className="flex gap-4 justify-center">
+                  <a href="#menu" className="inline-block bg-white text-[#765640] border border-[#E9DDCD] font-semibold px-8 py-3.5 rounded-full shadow-sm hover:bg-[#F8F1E7] transition">
+                    Lihat Katalog Menu
+                  </a>
+                  <button onClick={() => setIsOrderModalOpen(true)} className="inline-block bg-[#765640] hover:bg-[#60432F] text-white font-semibold px-8 py-3.5 rounded-full shadow-sm transition">
+                    Pesan Sekarang
+                  </button>
+                </div>
               </div>
 
               <div className="flex justify-center">
@@ -367,7 +385,6 @@ function App() {
                   className="w-full max-w-lg h-[450px] object-cover rounded-3xl shadow-lg"
                 />
               </div>
-
             </div>
           </div>
         </section>
@@ -401,13 +418,13 @@ function App() {
           </div>
         </section>
 
-        {/* MENU */}
+        {/* KATALOG MENU */}
         <section id="menu" className="py-20 bg-[#F8F1E7]">
           <div className="container mx-auto px-5 md:px-6">
             <div className="text-center mb-12">
-              <span className="text-[#765640] font-semibold tracking-widest uppercase text-sm">Pilihan Kami</span>
+              <span className="text-[#765640] font-semibold tracking-widest uppercase text-sm">Katalog</span>
               <h2 className="text-3xl md:text-4xl font-bold font-serif-custom text-[#4A3728] mt-3 mb-4">Menu Kopi Ruang Kita</h2>
-              <p className="text-[#5F5146] max-w-xl mx-auto">Temukan minuman dan camilan favoritmu untuk menemani setiap cerita.</p>
+              <p className="text-[#5F5146] max-w-xl mx-auto">Temukan minuman dan camilan favoritmu untuk menemani setiap cerita. Untuk memesan, silakan klik tombol Pesan Sekarang.</p>
             </div>
             
             <div className="max-w-md mx-auto mb-12">
@@ -419,97 +436,77 @@ function App() {
                 className="w-full px-5 py-3 rounded-full bg-white border border-[#E9DDCD] text-[#4A3728] focus:outline-none focus:border-[#765640]" 
               />
             </div>
-          {/* Tombol filter kategori menu */}
-                <div className="flex flex-wrap justify-center gap-3 mb-10">
-                  {['All', 'Coffee', 'Non-Coffee', 'Snack'].map(category => (
-                    <button
-                      key={category}
-                      onClick={() => setActiveCategory(category)}
-                      className={`px-5 py-2 rounded-full font-semibold transition ${
-                        activeCategory === category
-                          ? 'bg-[#765640] text-white'
-                          : 'bg-white text-[#765640] border border-[#E9DDCD] hover:bg-[#E9DDCD]'
-                      }`}
-                    >
-                      {category}
-                    </button>
-                  ))}
-                </div>
 
-                <div className="space-y-14">
-                  {['Coffee', 'Non-Coffee', 'Snack'].map(category => {
-                    const categoryItems = filteredMenu.filter(
-                      item => item.category === category
-                    );
+            <div className="flex flex-wrap justify-center gap-3 mb-10">
+              {['All', 'Coffee', 'Non-Coffee', 'Snack'].map(category => (
+                <button
+                  key={category}
+                  onClick={() => setActiveCategory(category)}
+                  className={`px-5 py-2 rounded-full font-semibold transition ${
+                    activeCategory === category
+                      ? 'bg-[#765640] text-white'
+                      : 'bg-white text-[#765640] border border-[#E9DDCD] hover:bg-[#E9DDCD]'
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
 
-                    if (categoryItems.length === 0) return null;
+            <div className="space-y-14">
+              {['Coffee', 'Non-Coffee', 'Snack'].map(category => {
+                const categoryItems = filteredMenu.filter(
+                  item => item.category === category
+                );
 
-                    return (
-                      <section key={category}>
-                        <div className="flex items-center gap-4 mb-5">
-                          <h3 className="text-2xl font-bold font-serif-custom text-[#4A3728]">
-                            {category}
-                          </h3>
-                          <div className="h-px flex-grow bg-[#D8C5B2]"></div>
+                if (categoryItems.length === 0) return null;
+
+                return (
+                  <section key={category}>
+                    <div className="flex items-center gap-4 mb-5">
+                      <h3 className="text-2xl font-bold font-serif-custom text-[#4A3728]">
+                        {category}
+                      </h3>
+                      <div className="h-px flex-grow bg-[#D8C5B2]"></div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                      {categoryItems.map(item => (
+                        <div
+                          key={item.id}
+                          className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition border border-[#E9DDCD] flex flex-col h-full"
+                        >
+                          <img
+                            src={item.img}
+                            alt={item.name}
+                            className="w-full h-48 object-cover rounded-xl mb-4"
+                            loading="lazy"
+                          />
+
+                          <div className="flex-grow flex flex-col">
+                            <h3 className="font-bold text-[#4A3728] text-lg mb-2">
+                              {item.name}
+                            </h3>
+                            <p className="text-sm text-[#5F5146] leading-relaxed mb-4 flex-grow">
+                              {item.description}
+                            </p>
+                            <div className="mt-auto border-t border-[#E9DDCD] pt-3">
+                              <p className="font-bold text-[#765640] text-base">
+                                Rp {item.price.toLocaleString('id-ID')}
+                              </p>
+                            </div>
+                          </div>
                         </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                          {categoryItems.map(item => {
-                            const count = cart[item.id] || 0;
-
-                            return (
-                              <div
-                                key={item.id}
-                                className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition border border-[#E9DDCD] flex flex-col h-full"
-                              >
-                                <img
-                                  src={item.img}
-                                  alt={item.name}
-                                  className="w-full h-48 object-cover rounded-xl mb-4"
-                                  loading="lazy"
-                                />
-
-                                <div className="flex-grow">
-                                  <h3 className="font-bold text-[#4A3728] text-lg mb-2">
-                                    {item.name}
-                                  </h3>
-                                  <p className="text-sm text-[#5F5146] leading-relaxed mb-3">
-                                    {item.description}
-                                  </p>
-                                  <p className="font-bold text-[#765640] text-base">
-                                    Rp {item.price.toLocaleString('id-ID')}
-                                  </p>
-                                </div>
-
-                                <div className="mt-4 flex items-center justify-between border-t border-[#E9DDCD] pt-3">
-                                  <button
-                                    onClick={() => updateCart(item.id, -1)}
-                                    className="w-8 h-8 rounded-full bg-[#F8F1E7] text-[#765640] font-bold hover:bg-[#E9DDCD]"
-                                  >
-                                    −
-                                  </button>
-                                  <span className="font-bold text-[#4A3728] text-sm">
-                                    {count}
-                                  </span>
-                                  <button
-                                    onClick={() => updateCart(item.id, 1)}
-                                    className="w-8 h-8 rounded-full bg-[#765640] text-white font-bold hover:bg-[#60432F]"
-                                  >
-                                    +
-                                  </button>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </section>
-                    );
-                  })}
-                </div>
+                      ))}
+                    </div>
+                  </section>
+                );
+              })}
+            </div>
           </div>
         </section>
 
-        {/* KERANJANG */}
+        {/*KERANJANG*/}
         <section id="keranjang" className="py-20 bg-white border-t border-[#E9DDCD]">
           <div className="container mx-auto px-5 md:px-6 max-w-4xl">
             <div className="text-center mb-10">
@@ -527,10 +524,10 @@ function App() {
                 <div className="text-center py-10">
                   <span className="text-4xl block mb-3">🛒</span>
                   <p className="text-[#5F5146] font-medium text-lg mb-2">Keranjang Anda masih kosong.</p>
-                  <p className="text-sm text-gray-500 mb-6">Pilih menu favorit Anda di atas untuk mulai memesan.</p>
-                  <a href="#menu" className="inline-block bg-[#765640] text-white px-6 py-2.5 rounded-full font-semibold text-sm hover:bg-[#60432F] transition">
-                    Pilih Menu
-                  </a>
+                  <p className="text-sm text-gray-500 mb-6">Klik tombol 'Pesan Sekarang' untuk mulai memesan.</p>
+                  <button onClick={() => setIsOrderModalOpen(true)} className="inline-block bg-[#765640] text-white px-6 py-2.5 rounded-full font-semibold text-sm hover:bg-[#60432F] transition">
+                    Pesan Sekarang
+                  </button>
                 </div>
               ) : (
                 <div>
@@ -549,23 +546,7 @@ function App() {
                           <tr key={item.id} className="text-[#5F5146]">
                             <td className="py-4 font-semibold text-[#4A3728]">{item.name}</td>
                             <td className="py-4 text-center">Rp {item.price.toLocaleString('id-ID')}</td>
-                            <td className="py-4">
-                              <div className="flex items-center justify-center gap-2">
-                                <button
-                                  onClick={() => updateCart(item.id, -1)}
-                                  className="w-7 h-7 rounded-full bg-white text-[#765640] font-bold border border-[#E9DDCD] hover:bg-[#E9DDCD] flex items-center justify-center"
-                                >
-                                  −
-                                </button>
-                                <span className="font-bold text-[#4A3728] px-2">{item.quantity}</span>
-                                <button
-                                  onClick={() => updateCart(item.id, 1)}
-                                  className="w-7 h-7 rounded-full bg-[#765640] text-white font-bold hover:bg-[#60432F] flex items-center justify-center"
-                                >
-                                  +
-                                </button>
-                              </div>
-                            </td>
+                            <td className="py-4 text-center font-bold text-[#4A3728]">{item.quantity}</td>
                             <td className="py-4 text-right font-bold text-[#4A3728]">
                               Rp {item.subtotal.toLocaleString('id-ID')}
                             </td>
@@ -575,7 +556,6 @@ function App() {
                     </table>
                   </div>
 
-                  {/* Ringkasan Kalkulasi */}
                   <div className="border-t-2 border-dashed border-[#E9DDCD] pt-4 space-y-3">
                     <div className="flex justify-between text-[#5F5146] text-sm">
                       <span>Subtotal</span>
@@ -591,19 +571,21 @@ function App() {
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => alert(`Pesanan berhasil diproses! Total Pembayaran: Rp ${grandTotalPrice.toLocaleString('id-ID')}`)}
-                    className="w-full mt-6 bg-[#765640] hover:bg-[#60432F] text-white font-bold py-3.5 rounded-2xl transition shadow-sm text-center block"
-                  >
-                    Konfirmasi & Bayar Pesanan
-                  </button>
+                  <div className="mt-6">
+                    <button
+                      onClick={() => setIsOrderModalOpen(true)}
+                      className="w-full bg-[#765640] hover:bg-[#60432F] text-white font-bold py-3.5 rounded-2xl transition shadow-sm text-center"
+                    >
+                      Ubah / Lanjutkan Pemesanan
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
           </div>
         </section>
 
-        {/* PROMO SPESIAL */}
+        {/*Promo Spesial*/}
         <section id="promo" className="py-20 bg-white">
           <div className="container mx-auto px-5 md:px-6">
             <div className="text-center mb-12">
@@ -613,17 +595,16 @@ function App() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-              
               <article
-                    onClick={() => openPromoModal({
-                      title: 'Teman Santai Sore',
-                      label: 'PAKET NYORE',
-                      description: 'Nikmati Kopi Susu Gula Aren dan Roti Bakar Coklat dalam satu paket hemat.',
-                      price: 'Rp29.000',
-                      normalPrice: 'Rp34.000'
-                    })}
-                    className="cursor-pointer bg-[#F8F1E7] rounded-2xl overflow-hidden border border-[#E9DDCD] shadow-sm hover:shadow-md transition flex flex-col"
-                  >
+                onClick={() => openPromoModal({
+                  title: 'Teman Santai Sore',
+                  label: 'PAKET NYORE',
+                  description: 'Nikmati Kopi Susu Gula Aren dan Roti Bakar Coklat dalam satu paket hemat.',
+                  price: 'Rp29.000',
+                  normalPrice: 'Rp34.000'
+                })}
+                className="cursor-pointer bg-[#F8F1E7] rounded-2xl overflow-hidden border border-[#E9DDCD] shadow-sm hover:shadow-md transition flex flex-col"
+              >
                 <div className="bg-[#765640] text-white px-5 py-3 flex items-center justify-between">
                   <span className="text-xs font-bold tracking-widest uppercase">Promo Bundling</span>
                   <span className="text-xl">☕</span>
@@ -640,7 +621,6 @@ function App() {
                 </div>
               </article>
 
-              
               <article
                 onClick={() => openPromoModal({
                   title: 'Beli 1, Gratis 1',
@@ -665,7 +645,6 @@ function App() {
                 </div>
               </article>
 
-              
               <article
                 onClick={() => openPromoModal({
                   title: 'Senin Lebih Hemat',
@@ -719,7 +698,6 @@ function App() {
             <h3 className="text-lg font-bold mb-4 text-[#4A3728]">
               Media Sosial
             </h3>
-
             <div className="flex space-x-3">
               <a href="#" className="w-10 h-10 rounded-lg bg-white text-[#765640] border border-[#E9DDCD] flex items-center justify-center hover:bg-[#E9DDCD] transition font-bold">IG</a>
               <a href="#" className="w-10 h-10 rounded-lg bg-white text-[#765640] border border-[#E9DDCD] flex items-center justify-center hover:bg-[#E9DDCD] transition font-bold">TT</a>
@@ -727,7 +705,6 @@ function App() {
             </div>
           </div>
           
-          {/*Form Hubungi Kami*/}
           <div>
             <h3 className="text-lg font-bold mb-4 text-[#4A3728]">
               Hubungi Kami
