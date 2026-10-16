@@ -5,7 +5,6 @@ import logoImage from './assets/LogoKopiRuangKita.jpeg';
 function App() {
   const [cart, setCart] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
-
   
   // State untuk filter kategori menu // 1
   const [activeCategory, setActiveCategory] = useState('All');
@@ -14,7 +13,6 @@ function App() {
   const [showModal, setShowModal] = useState(false);
   const [selectedPromo, setSelectedPromo] = useState(null);
 
-  
   // State khusus untuk Modal Login
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [username, setUsername] = useState('');
@@ -23,6 +21,15 @@ function App() {
   // State untuk Menu Hamburger (Mobile)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // State untuk Form Hubungi Kami
+  const [contactForm, setContactForm] = useState({
+    nama: '',
+    noHp: '',
+    pesan: ''
+  });
+  const [contactError, setContactError] = useState('');
+  const [contactSuccess, setContactSuccess] = useState('');
+  
   const menuData = [
     { id: 1, name: 'Kopi Susu Gula Aren', category: 'Coffee', price: 18000, img: 'https://i.pinimg.com/736x/f0/49/5b/f0495b2d4ee979ac4068f4c61a57397b.jpg', description: 'Perpaduan espresso, susu creamy, dan manis legit gula aren.' },
     { id: 2, name: 'Americano', category: 'Coffee', price: 15000, img: 'https://images.unsplash.com/photo-1551030173-122aabc4489c?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxM3A3fDA%3D', description: 'Kopi hitam dengan rasa bold dan aroma espresso yang khas.' },
@@ -77,6 +84,40 @@ function App() {
     setShowModal(true);
   };
 
+  //Kalkulasi Keranjang
+  const cartItems = menuData
+    .filter(item => cart[item.id] > 0)
+    .map(item => ({
+      ...item,
+      quantity: cart[item.id],
+      subtotal: item.price * cart[item.id]
+    }));
+
+  const subtotalPrice = cartItems.reduce((acc, item) => acc + item.subtotal, 0);
+  const taxPrice = subtotalPrice * 0.1; // Pajak 10%
+  const grandTotalPrice = subtotalPrice + taxPrice;
+
+  // Handler & Validasi Form Kontak
+  const handleContactChange = (e) => {
+    const { name, value } = e.target;
+    setContactForm(prev => ({ ...prev, [name]: value }));
+    setContactError('');
+    setContactSuccess('');
+  };
+
+  const handleContactSubmit = (e) => {
+    e.preventDefault();
+    if (!contactForm.nama.trim() || !contactForm.noHp.trim() || !contactForm.pesan.trim()) {
+      setContactError('Semua kolom wajib diisi!');
+      setContactSuccess('');
+      return;
+    }
+
+    setContactSuccess(`Terima kasih ${contactForm.nama}, pesan Anda telah berhasil dikirim!`);
+    setContactError('');
+    setContactForm({ nama: '', noHp: '', pesan: '' });
+  };
+  
   return (
     <div className="bg-white text-gray-700 relative pb-24">
     
@@ -95,6 +136,7 @@ function App() {
             <a href="#home" className="hover:text-[#765640] transition">Home</a>
             <a href="#tentang" className="hover:text-[#765640] transition">Tentang Kami</a>
             <a href="#menu" className="hover:text-[#765640] transition">Menu</a>
+            <a href="#keranjang" className="hover:text-[#765640] transition">Pesanan Anda</a>
             <a href="#promo" className="hover:text-[#765640] transition">Promo</a>
             <a href="#kontak" className="hover:text-[#765640] transition">Kontak</a>
           </div>
@@ -144,6 +186,13 @@ function App() {
                 className="hover:text-[#765640] transition"
               >
                 Menu
+              </a>
+              <a 
+                href="#keranjang" 
+                onClick={() => setIsMobileMenuOpen(false)} 
+                className="hover:text-[#765640] transition"
+                >
+                  Pesanan Anda
               </a>
               <a 
                 href="#promo" 
@@ -460,6 +509,100 @@ function App() {
           </div>
         </section>
 
+        {/* KERANJANG */}
+        <section id="keranjang" className="py-20 bg-white border-t border-[#E9DDCD]">
+          <div className="container mx-auto px-5 md:px-6 max-w-4xl">
+            <div className="text-center mb-10">
+              <span className="text-[#765640] font-semibold tracking-widest uppercase text-sm">Kalkulator & Ringkasan</span>
+              <h2 className="text-3xl md:text-4xl font-bold font-serif-custom text-[#4A3728] mt-2 mb-3">
+                Pesanan Anda
+              </h2>
+              <p className="text-[#5F5146]">
+                Periksa item pesanan Anda dan kalkulasi total harganya secara otomatis.
+              </p>
+            </div>
+
+            <div className="bg-[#F8F1E7] rounded-3xl p-6 md:p-8 border border-[#E9DDCD] shadow-sm">
+              {cartItems.length === 0 ? (
+                <div className="text-center py-10">
+                  <span className="text-4xl block mb-3">🛒</span>
+                  <p className="text-[#5F5146] font-medium text-lg mb-2">Keranjang Anda masih kosong.</p>
+                  <p className="text-sm text-gray-500 mb-6">Pilih menu favorit Anda di atas untuk mulai memesan.</p>
+                  <a href="#menu" className="inline-block bg-[#765640] text-white px-6 py-2.5 rounded-full font-semibold text-sm hover:bg-[#60432F] transition">
+                    Pilih Menu
+                  </a>
+                </div>
+              ) : (
+                <div>
+                  <div className="overflow-x-auto mb-6">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="border-b border-[#E9DDCD] text-[#4A3728] text-sm uppercase font-semibold">
+                          <th className="pb-3">Menu</th>
+                          <th className="pb-3 text-center">Harga</th>
+                          <th className="pb-3 text-center">Jumlah</th>
+                          <th className="pb-3 text-right">Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-[#E9DDCD]">
+                        {cartItems.map((item) => (
+                          <tr key={item.id} className="text-[#5F5146]">
+                            <td className="py-4 font-semibold text-[#4A3728]">{item.name}</td>
+                            <td className="py-4 text-center">Rp {item.price.toLocaleString('id-ID')}</td>
+                            <td className="py-4">
+                              <div className="flex items-center justify-center gap-2">
+                                <button
+                                  onClick={() => updateCart(item.id, -1)}
+                                  className="w-7 h-7 rounded-full bg-white text-[#765640] font-bold border border-[#E9DDCD] hover:bg-[#E9DDCD] flex items-center justify-center"
+                                >
+                                  −
+                                </button>
+                                <span className="font-bold text-[#4A3728] px-2">{item.quantity}</span>
+                                <button
+                                  onClick={() => updateCart(item.id, 1)}
+                                  className="w-7 h-7 rounded-full bg-[#765640] text-white font-bold hover:bg-[#60432F] flex items-center justify-center"
+                                >
+                                  +
+                                </button>
+                              </div>
+                            </td>
+                            <td className="py-4 text-right font-bold text-[#4A3728]">
+                              Rp {item.subtotal.toLocaleString('id-ID')}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Ringkasan Kalkulasi */}
+                  <div className="border-t-2 border-dashed border-[#E9DDCD] pt-4 space-y-3">
+                    <div className="flex justify-between text-[#5F5146] text-sm">
+                      <span>Subtotal</span>
+                      <span>Rp {subtotalPrice.toLocaleString('id-ID')}</span>
+                    </div>
+                    <div className="flex justify-between text-[#5F5146] text-sm">
+                      <span>Pajak (10%)</span>
+                      <span>Rp {taxPrice.toLocaleString('id-ID')}</span>
+                    </div>
+                    <div className="flex justify-between text-lg font-bold text-[#4A3728] pt-2 border-t border-[#E9DDCD]">
+                      <span>Grand Total</span>
+                      <span className="text-[#765640]">Rp {grandTotalPrice.toLocaleString('id-ID')}</span>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => alert(`Pesanan berhasil diproses! Total Pembayaran: Rp ${grandTotalPrice.toLocaleString('id-ID')}`)}
+                    className="w-full mt-6 bg-[#765640] hover:bg-[#60432F] text-white font-bold py-3.5 rounded-2xl transition shadow-sm text-center block"
+                  >
+                    Konfirmasi & Bayar Pesanan
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
         {/* PROMO SPESIAL */}
         <section id="promo" className="py-20 bg-white">
           <div className="container mx-auto px-5 md:px-6">
@@ -553,7 +696,7 @@ function App() {
 
       {/* FOOTER */}
       <footer id="kontak" className="bg-[#F8F1E7] text-[#5F5146] py-12 border-t border-[#E9DDCD]">
-        <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="text-2xl font-bold font-serif-custom mb-4 text-[#4A3728]">
               Kopi Ruang Kita
@@ -576,11 +719,70 @@ function App() {
             <h3 className="text-lg font-bold mb-4 text-[#4A3728]">
               Media Sosial
             </h3>
+
             <div className="flex space-x-3">
               <a href="#" className="w-10 h-10 rounded-lg bg-white text-[#765640] border border-[#E9DDCD] flex items-center justify-center hover:bg-[#E9DDCD] transition font-bold">IG</a>
               <a href="#" className="w-10 h-10 rounded-lg bg-white text-[#765640] border border-[#E9DDCD] flex items-center justify-center hover:bg-[#E9DDCD] transition font-bold">TT</a>
               <a href="#" className="w-10 h-10 rounded-lg bg-white text-[#765640] border border-[#E9DDCD] flex items-center justify-center hover:bg-[#E9DDCD] transition font-bold">FB</a>
             </div>
+          </div>
+          
+          {/*Form Hubungi Kami*/}
+          <div>
+            <h3 className="text-lg font-bold mb-4 text-[#4A3728]">
+              Hubungi Kami
+            </h3>
+
+            {contactError && (
+              <div className="mb-3 p-2.5 bg-red-100 border border-red-300 text-red-700 text-xs rounded-xl">
+                ⚠️ {contactError}
+              </div>
+            )}
+
+            {contactSuccess && (
+              <div className="mb-3 p-2.5 bg-green-100 border border-green-300 text-green-700 text-xs rounded-xl">
+                ✅ {contactSuccess}
+              </div>
+            )}
+
+            <form onSubmit={handleContactSubmit} className="space-y-3">
+              <div>
+                <input
+                  type="text"
+                  name="nama"
+                  value={contactForm.nama}
+                  onChange={handleContactChange}
+                  placeholder="Nama Lengkap"
+                  className="w-full px-3.5 py-2 text-sm rounded-xl bg-white border border-[#E9DDCD] text-[#4A3728] focus:outline-none focus:border-[#765640]"
+                />
+              </div>
+              <div>
+                <input
+                  type="tel"
+                  name="noHp"
+                  value={contactForm.noHp}
+                  onChange={handleContactChange}
+                  placeholder="Nomor HP / WhatsApp"
+                  className="w-full px-3.5 py-2 text-sm rounded-xl bg-white border border-[#E9DDCD] text-[#4A3728] focus:outline-none focus:border-[#765640]"
+                />
+              </div>
+              <div>
+                <textarea
+                  name="pesan"
+                  rows="3"
+                  value={contactForm.pesan}
+                  onChange={handleContactChange}
+                  placeholder="Tulis pesan Anda..."
+                  className="w-full px-3.5 py-2 text-sm rounded-xl bg-white border border-[#E9DDCD] text-[#4A3728] focus:outline-none focus:border-[#765640]"
+                ></textarea>
+              </div>
+              <button
+                type="submit"
+                className="w-full bg-[#765640] hover:bg-[#60432F] text-white font-medium py-2 rounded-xl text-sm transition shadow-sm"
+              >
+                Kirim Pesan
+              </button>
+            </form>
           </div>
         </div>
 
