@@ -42,7 +42,7 @@ export default function OrderModal({
         <div className="p-6 overflow-y-auto flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 bg-[#F8F1E7]">
           
           <div className="lg:col-span-7 space-y-4">
-            <h3 className="font-bold text-[#4A3728] text-lg border-b border-[#E9DDCD] pb-2">1. Pilih Menu</h3>
+            <h3 className="font-bold text-[#4A3728] text-lg border-b border-[#E9DDCD] pb-2">Pilih Menu</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[500px] overflow-y-auto pr-1">
               {menuData.map(item => (
                 <div key={item.id} className="bg-white p-3 rounded-xl border border-[#E9DDCD] flex gap-3 items-center shadow-xs">

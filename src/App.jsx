@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import './index.css';
 import logoImage from './assets/LogoKopiRuangKita.jpeg';
 
+// Import gambar ikon sosial media sesuai ekstensi di folder assets
+import igIcon from './assets/ig.jpg';
+import ttIcon from './assets/tt.png';
+import fbIcon from './assets/fb.png';
+
 // Import komponen modal yang terpisah
 import OrderModal from './components/OrderModal';
 import ReceiptModal from './components/ReceiptModal';
@@ -711,12 +716,17 @@ function App() {
               Media Sosial
             </h3>
             <div className="flex space-x-3">
-              <a href="#" className="w-10 h-10 rounded-lg bg-white text-[#765640] border border-[#E9DDCD] flex items-center justify-center hover:bg-[#E9DDCD] transition font-bold">IG</a>
-              <a href="#" className="w-10 h-10 rounded-lg bg-white text-[#765640] border border-[#E9DDCD] flex items-center justify-center hover:bg-[#E9DDCD] transition font-bold">TT</a>
-              <a href="#" className="w-10 h-10 rounded-lg bg-white text-[#765640] border border-[#E9DDCD] flex items-center justify-center hover:bg-[#E9DDCD] transition font-bold">FB</a>
+              <a href="#" className="w-10 h-10 rounded-lg bg-white border border-[#E9DDCD] flex items-center justify-center hover:bg-[#F8F1E7] transition overflow-hidden">
+                <img src={igIcon} alt="Instagram" className="w-8 h-8 object-contain rounded-md" />
+              </a>
+              <a href="#" className="w-10 h-10 rounded-lg bg-white border border-[#E9DDCD] flex items-center justify-center hover:bg-[#F8F1E7] transition overflow-hidden">
+                <img src={ttIcon} alt="TikTok" className="w-8 h-8 object-contain rounded-md" />
+              </a>
+              <a href="#" className="w-10 h-10 rounded-lg bg-white border border-[#E9DDCD] flex items-center justify-center hover:bg-[#F8F1E7] transition overflow-hidden">
+                <img src={fbIcon} alt="Facebook" className="w-10 h-12 object-contain rounded-md" />
+              </a>
             </div>
           </div>
-          
           <div>
             <h3 className="text-lg font-bold mb-4 text-[#4A3728]">
               Hubungi Kami
