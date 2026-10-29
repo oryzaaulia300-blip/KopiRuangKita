@@ -1,4 +1,3 @@
-
 export default function Contact({
   contactError,
   contactSuccess,
@@ -9,15 +8,15 @@ export default function Contact({
   return (
     <section
       id="kontak"
-      className="bg-[#F8F1E7] text-[#5F5146] pt-8 pb-8 mb-[30px]"
+      className="bg-[#F8F1E7] text-[#5F5146] pt-10 pb-10 mb-[100px]"
     >
-      <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-20 items-start justify-items-center">
+      <div className="max-w-[1200px] mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-12 lg:gap-16">
 
           {/* INFORMASI DAN LOKASI */}
           <div className="w-full max-w-[420px]">
-            <h2 className="text-xl font-bold font-serif-custom mb-4 text-[#4A3728] text-center">
-              Informasi & Lokasi
+            <h2 className="text-xl font-bold font-serif-custom mb-4 text-[#4A3728]">
+              Informasi &amp; Lokasi
             </h2>
 
             <div className="w-full h-36 rounded-2xl overflow-hidden border border-[#E9DDCD] mb-3">
@@ -39,7 +38,7 @@ export default function Contact({
 
           {/* HUBUNGI KAMI */}
           <div className="w-full max-w-[420px]">
-            <h2 className="text-xl font-bold font-serif-custom mb-4 text-[#4A3728] text-center">
+            <h2 className="text-xl font-bold font-serif-custom mb-4 text-[#4A3728]">
               Hubungi Kami
             </h2>
 
