@@ -13,7 +13,7 @@ export default function ReceiptModal({ receiptData, onClose }) {
 
     // Cek apakah script dari index.html sudah terbaca oleh browser
     if (typeof window.html2pdf === 'undefined') {
-      alert('Sistem PDF belum siap. Pastikan internet terhubung agar script CDN berjalan.');
+      alert('Sistem PDF belum siap. Pastikan koneksi internet terhubung.');
       return;
     }
 
@@ -21,27 +21,29 @@ export default function ReceiptModal({ receiptData, onClose }) {
     setIsDownloading(true);
 
     const options = {
-      margin: 5,
+      margin: 10,
       filename: `Struk-${receiptData.orderId}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, logging: false },
+      html2canvas: { scale: 2, useCORS: true, logging: false, backgroundColor: '#FFFFFF', scrollX: 0, scrollY: 0},
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
     // Proses konversi dan download langsung
-    window.html2pdf()
-      .set(options)
-      .from(element)
-      .save()
-      .then(() => {
-        // Matikan loading saat selesai download
-        setIsDownloading(false);
-      })
-      .catch((err) => {
-        console.error("Gagal unduh PDF:", err);
-        setIsDownloading(false); // Kembalikan tombol jika error
-        alert('Terjadi kesalahan saat mengunduh PDF.');
-      });
+    setTimeout(() => { 
+      window.html2pdf()
+        .set(options)
+        .from(element)
+        .save()
+        .then(() => {
+          // Matikan loading saat selesai download
+          setIsDownloading(false);
+        })
+        .catch((err) => {
+          console.error("Gagal unduh PDF:", err);
+          setIsDownloading(false); // Kembalikan tombol jika error
+          alert('Terjadi kesalahan saat mengunduh PDF.');
+        });
+    }, 200);
   };
 
   return (
@@ -83,6 +85,12 @@ export default function ReceiptModal({ receiptData, onClose }) {
               <span>No. Meja:</span>
               <span className="font-bold">{receiptData.noMeja}</span>
             </div>
+            {receiptData.noHp && (
+              <div className="flex justify-between">
+                <span>No. WA:</span>
+                <span className="font-bold">{receiptData.noHp}</span>
+              </div>
+            )}
             <div className="flex justify-between">
               <span>Metode Bayar:</span>
               <span className="font-bold text-[#765640]">{receiptData.metode}</span>

@@ -41,6 +41,7 @@ function App() {
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [customerName, setCustomerName] = useState('');
   const [tableNumber, setTableNumber] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('qris');
   const [receiptData, setReceiptData] = useState(null);
 
@@ -110,11 +111,17 @@ function App() {
       return;
     }
 
+    if (!phoneNumber.trim()) {
+      alert('Nomor WhatsApp wajib diisi!');
+      return;
+    }
+
     const orderData = {
       orderId: 'KRK-' + Math.floor(100000 + Math.random() * 900000),
       tanggal: new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }),
       nama: customerName,
       noMeja: tableNumber,
+      noHp: phoneNumber,
       metode: paymentMethod.toUpperCase(),
       items: [...cartItems],
       subtotal: subtotalPrice,
@@ -127,6 +134,7 @@ function App() {
     setCart({});
     setCustomerName('');
     setTableNumber('');
+    setPhoneNumber('');
   };
 
   const handleContactChange = (e) => {
@@ -168,6 +176,8 @@ function App() {
         setCustomerName={setCustomerName}
         tableNumber={tableNumber}
         setTableNumber={setTableNumber}
+        phoneNumber={phoneNumber}         
+        setPhoneNumber={setPhoneNumber}    
         paymentMethod={paymentMethod}
         setPaymentMethod={setPaymentMethod}
         handleProcessOrder={handleProcessOrder}

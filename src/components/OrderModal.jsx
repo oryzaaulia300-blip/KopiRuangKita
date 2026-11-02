@@ -10,6 +10,10 @@ export default function OrderModal({
   setCustomerName,
   tableNumber,
   setTableNumber,
+  phoneNumber,       
+  setPhoneNumber,
+  paymentProof,
+  setPaymentProof,
   paymentMethod,
   setPaymentMethod,
   handleProcessOrder,
@@ -20,6 +24,13 @@ export default function OrderModal({
 }) {
   if (!isOpen) return null;
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPaymentProof(URL.createObjectURL(file));
+    }
+  };
+  
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="bg-[#F8F1E7] w-full max-w-5xl h-[90vh] rounded-2xl shadow-xl flex flex-col overflow-hidden relative">
@@ -103,6 +114,23 @@ export default function OrderModal({
                 </div>
               </div>
 
+              <div>
+                <label className="block text-xs font-semibold text-[#4A3728] mb-1">
+                  Nomor WhatsApp <span className="text-red-500">*</span>
+                </label>
+                <input 
+                  type="tel"
+                  required
+                  placeholder="Contoh: 081234567890"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="w-full px-3 py-2 text-sm rounded-xl border border-[#E9DDCD] focus:outline-none focus:border-[#765640]"
+                />
+                <p className="text-[10px] text-gray-500 mt-1">
+                  Untuk notifikasi WhatsApp saat pesanan selesai
+                </p>
+              </div>
+             
               <div>
                 <label className="block text-xs font-semibold text-[#4A3728] mb-1.5">Metode Pembayaran</label>
                 <div className="grid grid-cols-3 gap-2">
