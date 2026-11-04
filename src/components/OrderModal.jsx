@@ -27,6 +27,7 @@ export default function OrderModal({
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Membuat URL preview sementara dari file gambar yang diunggah
       setPaymentProof(URL.createObjectURL(file));
     }
   };
@@ -35,7 +36,7 @@ export default function OrderModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="bg-[#F8F1E7] w-full max-w-5xl h-[90vh] rounded-2xl shadow-xl flex flex-col overflow-hidden relative">
         
-        {/* Modal */}
+        {/* Header Modal */}
         <div className="p-5 bg-white border-b border-[#E9DDCD] flex justify-between items-center">
           <div>
             <h2 className="text-2xl font-bold font-serif-custom text-[#4A3728]">Form Pemesanan & Pembayaran</h2>
@@ -52,8 +53,9 @@ export default function OrderModal({
         {/* Isi Modal */}
         <div className="p-6 overflow-y-auto flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 bg-[#F8F1E7]">
           
+          {/* Kolom Kiri: Pilih Menu */}
           <div className="lg:col-span-7 space-y-4">
-            <h3 className="font-bold text-[#4A3728] text-lg border-b border-[#E9DDCD] pb-2">Pilih Menu</h3>
+            <h3 className="font-bold text-[#4A3728] text-lg border-b border-[#E9DDCD] pb-2">1. Pilih Menu</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[500px] overflow-y-auto pr-1">
               {menuData.map(item => (
                 <div key={item.id} className="bg-white p-3 rounded-xl border border-[#E9DDCD] flex gap-3 items-center shadow-xs">
@@ -63,6 +65,7 @@ export default function OrderModal({
                     <p className="text-[#765640] font-semibold text-xs mb-2">Rp {item.price.toLocaleString('id-ID')}</p>
                     <div className="flex items-center gap-2">
                       <button
+                        type="button"
                         onClick={() => updateCart(item.id, -1)}
                         className="w-6 h-6 rounded-full bg-[#F8F1E7] text-[#765640] font-bold border border-[#E9DDCD] flex items-center justify-center text-xs"
                       >
@@ -72,6 +75,7 @@ export default function OrderModal({
                         {cart[item.id] || 0}
                       </span>
                       <button
+                        type="button"
                         onClick={() => updateCart(item.id, 1)}
                         className="w-6 h-6 rounded-full bg-[#765640] text-white font-bold flex items-center justify-center text-xs"
                       >
@@ -84,7 +88,7 @@ export default function OrderModal({
             </div>
           </div>
 
-          {/*Form Data & Pembayaran */}
+          {/* Kolom Kanan: Form Data & Pembayaran */}
           <div className="lg:col-span-5 bg-white p-5 rounded-2xl border border-[#E9DDCD] shadow-sm flex flex-col justify-between">
             <form onSubmit={handleProcessOrder} className="space-y-4">
               <h3 className="font-bold text-[#4A3728] text-lg border-b border-[#E9DDCD] pb-2">2. Data & Metode Pembayaran</h3>
@@ -170,6 +174,7 @@ export default function OrderModal({
                 </div>
               </div>
 
+              {/* Detail Info Pembayaran sesuai Metode */}
               {paymentMethod === 'qris' && (
                 <div className="bg-[#F8F1E7] p-3 rounded-xl border border-[#E9DDCD] text-center space-y-2">
                   <p className="text-xs font-bold text-[#4A3728]">Scan QRIS Kopi Ruang Kita</p>
@@ -183,10 +188,35 @@ export default function OrderModal({
               )}
 
               {paymentMethod === 'transfer' && (
-                <div className="bg-[#F8F1E7] p-3 rounded-xl border border-[#E9DDCD] text-xs text-[#5F5146] space-y-1">
-                  <p className="font-bold text-[#4A3728]">Rekening Bank Mandiri:</p>
-                  <p className="font-mono text-sm font-bold text-[#765640]">106-00-1234567-8</p>
-                  <p className="text-[11px]">a.n. Kopi Ruang Kita</p>
+                <div className="bg-[#F8F1E7] p-3.5 rounded-xl border border-[#E9DDCD] text-xs text-[#5F5146] space-y-3">
+                  <div>
+                    <p className="font-bold text-[#4A3728]">Rekening Bank Mandiri:</p>
+                    <p className="font-mono text-sm font-bold text-[#765640]">106-00-1234567-8</p>
+                    <p className="text-[11px]">a.n. Kopi Ruang Kita</p>
+                  </div>
+
+                  <div className="border-t border-[#E9DDCD] pt-2">
+                    <label className="block text-xs font-semibold text-[#4A3728] mb-1">
+                      Upload Bukti Pembayaran <span className="text-red-500">*</span>
+                    </label>
+                    <input 
+                      type="file"
+                      accept="image/*"
+                      required
+                      onChange={handleFileChange}
+                      className="w-full text-xs text-[#5F5146] file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#765640] file:text-white hover:file:bg-[#60432F] cursor-pointer"
+                    />
+                    {paymentProof && (
+                      <div className="mt-2 text-center">
+                        <p className="text-[10px] text-gray-500 mb-1">Preview Bukti:</p>
+                        <img 
+                          src={paymentProof} 
+                          alt="Preview Bukti Pembayaran" 
+                          className="w-24 h-24 object-cover mx-auto rounded-lg border border-[#E9DDCD]"
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -196,6 +226,7 @@ export default function OrderModal({
                 </div>
               )}
 
+              {/* Rincian Harga */}
               <div className="border-t border-[#E9DDCD] pt-3 space-y-1 text-xs">
                 <div className="flex justify-between text-[#5F5146]">
                   <span>Subtotal ({cartItems.reduce((acc, item) => acc + item.quantity, 0)} item)</span>

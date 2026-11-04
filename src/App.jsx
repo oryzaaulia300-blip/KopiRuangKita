@@ -43,6 +43,10 @@ function App() {
   const [tableNumber, setTableNumber] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('qris');
+  
+  // Poin 1: Tambahkan state untuk menyimpan bukti pembayaran transfer
+  const [paymentProof, setPaymentProof] = useState(null);
+  
   const [receiptData, setReceiptData] = useState(null);
 
   // State form kontak
@@ -116,6 +120,12 @@ function App() {
       return;
     }
 
+    // Validasi tambahan jika memilih metode transfer tapi belum upload bukti
+    if (paymentMethod === 'transfer' && !paymentProof) {
+      alert('Silakan upload bukti pembayaran terlebih dahulu!');
+      return;
+    }
+
     const orderData = {
       orderId: 'KRK-' + Math.floor(100000 + Math.random() * 900000),
       tanggal: new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }),
@@ -123,6 +133,7 @@ function App() {
       noMeja: tableNumber,
       noHp: phoneNumber,
       metode: paymentMethod.toUpperCase(),
+      paymentProof: paymentProof, // Menyimpan gambar preview ke struk/log order
       items: [...cartItems],
       subtotal: subtotalPrice,
       pajak: taxPrice,
@@ -131,10 +142,15 @@ function App() {
 
     setReceiptData(orderData);
     setIsOrderModalOpen(false);
+    
+    // Reset form & state setelah order selesai
     setCart({});
     setCustomerName('');
     setTableNumber('');
     setPhoneNumber('');
+    
+    // Poin 3: Reset state paymentProof menjadi null
+    setPaymentProof(null);
   };
 
   const handleContactChange = (e) => {
@@ -166,6 +182,7 @@ function App() {
         setIsMobileMenuOpen={setIsMobileMenuOpen}
       />
 
+      {/* Poin 2: Teruskan paymentProof dan setPaymentProof sebagai props */}
       <OrderModal 
         isOpen={isOrderModalOpen}
         onClose={() => setIsOrderModalOpen(false)}
@@ -177,7 +194,9 @@ function App() {
         tableNumber={tableNumber}
         setTableNumber={setTableNumber}
         phoneNumber={phoneNumber}         
-        setPhoneNumber={setPhoneNumber}    
+        setPhoneNumber={setPhoneNumber}
+        paymentProof={paymentProof}
+        setPaymentProof={setPaymentProof}
         paymentMethod={paymentMethod}
         setPaymentMethod={setPaymentMethod}
         handleProcessOrder={handleProcessOrder}
@@ -202,7 +221,6 @@ function App() {
         handleLoginSubmit={handleLoginSubmit}
       />
 
-      {/* flex-grow memastikan elemen ini mengambil sisa ruang kosong agar footer terdorong ke bawah */}
       <main className="flex-grow">
         <PromoModal
           showModal={showModal}
