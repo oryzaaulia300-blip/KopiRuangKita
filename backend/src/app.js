@@ -43,14 +43,13 @@ app.use(
         return callback(null, true);
       }
 
-      const isAllowed = allowedOrigins.some((allowed) => {
-        if (allowed === origin) return true;
-        // Allow Vercel deployments (*.vercel.app)
-        if (allowed.includes('.vercel.app') && origin.endsWith('.vercel.app')) return true;
-        return false;
-      });
-
-      if (isAllowed) {
+      // Automatically allow all Vercel domains (*.vercel.app), localhost, or origins in allowedOrigins
+      if (
+        origin.endsWith('.vercel.app') ||
+        origin.includes('localhost') ||
+        origin.includes('127.0.0.1') ||
+        allowedOrigins.includes(origin)
+      ) {
         return callback(null, true);
       }
 
