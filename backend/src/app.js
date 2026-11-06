@@ -45,7 +45,7 @@ app.use(
 
       const isAllowed = allowedOrigins.some((allowed) => {
         if (allowed === origin) return true;
-        // Allow Vercel preview deployments (*.vercel.app)
+        // Allow Vercel deployments (*.vercel.app)
         if (allowed.includes('.vercel.app') && origin.endsWith('.vercel.app')) return true;
         return false;
       });
@@ -68,6 +68,30 @@ app.use(express.json({ limit: '15mb' }));
 app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 
 // 4. HEALTH CHECK & ROOT
+const healthHandler = async (req, res) => {
+  let dbStatus = 'DISCONNECTED';
+  let dbTime = null;
+
+  try {
+    const dbRes = await pool.query('SELECT NOW() as current_time');
+    dbStatus = 'CONNECTED';
+    dbTime = dbRes.rows[0].current_time;
+  } catch (error) {
+    dbStatus = `ERROR: ${error.message}`;
+  }
+
+  res.json({
+    status: 'OK',
+    uptimeSeconds: Math.floor(process.uptime()),
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'production',
+    database: {
+      status: dbStatus,
+      serverTime: dbTime
+    }
+  });
+};
+
 app.get('/', (req, res) => {
   res.json({
     project: 'Kopi Ruang Kita API',
@@ -85,36 +109,21 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/api/health', async (req, res) => {
-  let dbStatus = 'DISCONNECTED';
-  let dbTime = null;
+app.get('/health', healthHandler);
+app.get('/api/health', healthHandler);
 
-  try {
-    const dbRes = await pool.query('SELECT NOW() as current_time');
-    dbStatus = 'CONNECTED';
-    dbTime = dbRes.rows[0].current_time;
-  } catch (error) {
-    dbStatus = `ERROR: ${error.message}`;
-  }
-
-  res.json({
-    status: 'OK',
-    uptimeSeconds: Math.floor(process.uptime()),
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development',
-    database: {
-      status: dbStatus,
-      serverTime: dbTime
-    }
-  });
-});
-
-// 5. API ROUTES
+// 5. API ROUTES (Mounted on both /api/* and /* for full compatibility with standalone server & Vercel Serverless)
 app.use('/api/auth', authRoutes);
 app.use('/api/menus', menuRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/promos', promoRoutes);
 app.use('/api/contacts', contactRoutes);
+
+app.use('/auth', authRoutes);
+app.use('/menus', menuRoutes);
+app.use('/orders', orderRoutes);
+app.use('/promos', promoRoutes);
+app.use('/contacts', contactRoutes);
 
 // 6. ERROR HANDLERS
 app.use(notFoundHandler);
