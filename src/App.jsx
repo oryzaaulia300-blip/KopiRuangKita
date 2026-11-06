@@ -11,7 +11,7 @@ import fbIcon from './assets/fb.png';
 import { menuData } from './data/menuData';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import AboutSection from './components/Aboutsection';
+import AboutSection from './components/AboutSection';
 import MenuSection from './components/MenuSection';
 import CartSection from './components/CartSection';
 import PromoSection from './components/PromoSection';
