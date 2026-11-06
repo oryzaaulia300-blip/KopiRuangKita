@@ -12,11 +12,21 @@ const { Pool } = pg;
 
 const connectionString = process.env.DATABASE_URL;
 
-const isCloudDatabase = Boolean(
-  connectionString &&
-  !connectionString.includes('localhost') &&
-  !connectionString.includes('127.0.0.1')
-);
+const resolveSslConfig = () => {
+  if (!connectionString) return false;
+  if (connectionString.includes('localhost') || connectionString.includes('127.0.0.1')) {
+    return false;
+  }
+  // Railway private network internal hostname does not use SSL by default
+  if (
+    connectionString.includes('sslmode=disable') ||
+    (connectionString.includes('.railway.internal') && !connectionString.includes('sslmode=require'))
+  ) {
+    return false;
+  }
+  // Cloud databases (Neon, Supabase, Render, Railway Public Proxy) require SSL
+  return { rejectUnauthorized: false };
+};
 
 export const pool = new Pool({
   connectionString: connectionString || undefined,
@@ -25,7 +35,7 @@ export const pool = new Pool({
   user: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD || 'password',
   database: process.env.DB_NAME || 'kopiruangkita',
-  ssl: isCloudDatabase ? { rejectUnauthorized: false } : false,
+  ssl: resolveSslConfig(),
   max: 20, // Max clients in the pool
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 5000,

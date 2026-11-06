@@ -12,7 +12,6 @@ dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const { Pool } = pg;
 
-const isProduction = process.env.NODE_ENV === 'production';
 const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
@@ -21,12 +20,24 @@ if (!connectionString) {
   process.exit(1);
 }
 
-// Support SSL for hosted PostgreSQL providers like Neon.tech, Supabase, Render
+const resolveSslConfig = () => {
+  if (!connectionString) return false;
+  if (connectionString.includes('localhost') || connectionString.includes('127.0.0.1')) {
+    return false;
+  }
+  if (
+    connectionString.includes('sslmode=disable') ||
+    (connectionString.includes('.railway.internal') && !connectionString.includes('sslmode=require'))
+  ) {
+    return false;
+  }
+  return { rejectUnauthorized: false };
+};
+
+// Support SSL for hosted PostgreSQL providers like Neon.tech, Supabase, Render, Railway
 const pool = new Pool({
   connectionString,
-  ssl: connectionString.includes('localhost') || connectionString.includes('127.0.0.1')
-    ? false
-    : { rejectUnauthorized: false }
+  ssl: resolveSslConfig()
 });
 
 async function runMigration() {
