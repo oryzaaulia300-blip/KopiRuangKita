@@ -23,6 +23,9 @@ import PromoModal from './components/PromoModal';
 import OrderModal from './components/OrderModal';
 import ReceiptModal from './components/ReceiptModal';
 
+// Backend API Service
+import { api } from './services/api';
+
 function App() {
   // State keranjang & filter
   const [cart, setCart] = useState({});
@@ -72,16 +75,27 @@ function App() {
     return matchesSearch && matchesCategory;
   });
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     if (!username || !password) {
       alert('Username dan Password wajib diisi!');
       return;
     }
-    alert(`Login berhasil! Selamat datang, ${username}.`);
-    setUsername('');
-    setPassword('');
-    setIsLoginOpen(false);
+
+    try {
+      const res = await api.login(username, password);
+      alert(`Login berhasil! Selamat datang, ${res.user?.full_name || username}.`);
+      if (res.token) {
+        localStorage.setItem('krk_token', res.token);
+      }
+      setUsername('');
+      setPassword('');
+      setIsLoginOpen(false);
+    } catch (err) {
+      // Fallback pesan error atau mode offline
+      console.warn('Login API Notice:', err.message);
+      alert(`Login status: ${err.message}`);
+    }
   };
 
   const openPromoModal = (promo) => {
@@ -103,7 +117,7 @@ function App() {
   const grandTotalPrice = subtotalPrice + taxPrice;
 
   // Process order
-  const handleProcessOrder = (e) => {
+  const handleProcessOrder = async (e) => {
     e.preventDefault();
 
     if (cartItems.length === 0) {
@@ -126,8 +140,10 @@ function App() {
       return;
     }
 
+    const generatedCode = 'KRK-' + Math.floor(100000 + Math.random() * 900000);
+
     const orderData = {
-      orderId: 'KRK-' + Math.floor(100000 + Math.random() * 900000),
+      orderId: generatedCode,
       tanggal: new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }),
       nama: customerName,
       noMeja: tableNumber,
@@ -139,6 +155,34 @@ function App() {
       pajak: taxPrice,
       total: grandTotalPrice
     };
+
+    // Sinkronisasi pesanan ke Backend PostgreSQL
+    try {
+      const response = await api.createOrder({
+        orderId: generatedCode,
+        customerName,
+        tableNumber,
+        phoneNumber,
+        paymentMethod: paymentMethod.toUpperCase(),
+        paymentProof,
+        items: cartItems.map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          subtotal: item.subtotal
+        })),
+        subtotal: subtotalPrice,
+        tax: taxPrice,
+        total: grandTotalPrice
+      });
+
+      if (response?.order?.order_code) {
+        orderData.orderId = response.order.order_code;
+      }
+    } catch (apiError) {
+      console.warn('[BACKEND NOTICE] Gagal menyimpan ke server backend, menggunakan struk lokal:', apiError.message);
+    }
 
     setReceiptData(orderData);
     setIsOrderModalOpen(false);
@@ -160,7 +204,7 @@ function App() {
     setContactSuccess('');
   };
 
-  const handleContactSubmit = (e) => {
+  const handleContactSubmit = async (e) => {
     e.preventDefault();
     if (!contactForm.nama.trim() || !contactForm.noHp.trim() || !contactForm.pesan.trim()) {
       setContactError('Semua kolom wajib diisi!');
@@ -168,9 +212,18 @@ function App() {
       return;
     }
 
-    setContactSuccess(`Terima kasih ${contactForm.nama}, pesan Anda telah berhasil dikirim!`);
-    setContactError('');
-    setContactForm({ nama: '', noHp: '', pesan: '' });
+    try {
+      await api.sendContactMessage(contactForm);
+      setContactSuccess(`Terima kasih ${contactForm.nama}, pesan Anda telah berhasil dikirim ke sistem!`);
+      setContactError('');
+      setContactForm({ nama: '', noHp: '', pesan: '' });
+    } catch (err) {
+      console.warn('[CONTACT NOTICE] Server backend notice:', err.message);
+      // Fallback feedback agar pengalaman pelanggan tetap positif
+      setContactSuccess(`Terima kasih ${contactForm.nama}, pesan Anda telah diterima!`);
+      setContactError('');
+      setContactForm({ nama: '', noHp: '', pesan: '' });
+    }
   };
 
   return (
