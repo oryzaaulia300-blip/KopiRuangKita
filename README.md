@@ -1,11 +1,9 @@
-# ☕ Kopi Ruang Kita — Web & Order Management System
+# Kopi Ruang Kita — Web & Order Management System
 
 Aplikasi web pemesanan kopi dan manajemen operasional kafe berbasis **Fullstack Web Application** dengan arsitektur serverless, database relasional PostgreSQL, dan keamanan berbasis JWT.
 
 🔗 **Live Production URL:** [https://kopi-ruang-kita-lime.vercel.app](https://kopi-ruang-kita-lime.vercel.app)  
 📊 **Database:** PostgreSQL di **Supabase (Region Singapore)** via IPv4 Session/Transaction Pooler.
-
----
 
 ## 🚀 Arsitektur & Tech Stack
 
@@ -30,7 +28,7 @@ Skema database dirancang lengkap di [DATABASE_DESIGN.md](file:///c:/Users/rumah/
 5. **`promos`**: Daftar penawaran bundling dan diskon aktif di halaman utama.
 6. **`contacts`**: Formulir pesan/feedback pengunjung yang tersimpan ke database.
 
----
+
 
 ## 👥 Pembagian Peran Tim (5 Orang)
 
@@ -46,7 +44,6 @@ Skema database dirancang lengkap di [DATABASE_DESIGN.md](file:///c:/Users/rumah/
 * **📊 Orang 5 — Contact API, Analytics & QA Lead:**
   * Formulir kontak (`POST /api/contacts`), analitik omset (`GET /api/reports/summary`), dan pengujian Postman.
 
----
 
 ## 🧪 Dokumentasi & Pengujian API (Postman)
 
@@ -54,7 +51,7 @@ Proyek ini telah dilengkapi 2 koleksi Postman siap pakai:
 1. **[KopiRuangKita.postman_collection.json](file:///c:/Users/rumah/Documents/GitHub/KopiRuangKita/KopiRuangKita.postman_collection.json)**: Koleksi lengkap 18 endpoint untuk Orang 2 s/d Orang 5 (QA Lead).
 2. **[KopiRuangKita_Orang1_DevOps.postman_collection.json](file:///c:/Users/rumah/Documents/GitHub/KopiRuangKita/KopiRuangKita_Orang1_DevOps.postman_collection.json)**: Koleksi khusus verifikasi infrastruktur, health check, dan integritas skema database oleh Orang 1.
 
----
+
 
 ## 💻 Panduan Menjalankan Secara Lokal (Local Development)
 
