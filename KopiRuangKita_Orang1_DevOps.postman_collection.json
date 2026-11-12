@@ -1,0 +1,338 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-4789-abcd-devopsorang1krk",
+    "name": "Kopi Ruang Kita - Orang 1 (Database Architect & DevOps Lead)",
+    "description": "Suite pengujian khusus untuk Orang 1 (Database Architect & Full DevOps Lead) Kopi Ruang Kita.\n\nFokus:\n1. Infrastructure & System Health (Vercel Serverless + Supabase Pooler IPv4)\n2. Database Schema Verification (6 Tables: users, menus, orders, order_items, promos, contacts)\n3. Relational Transaction & Foreign Key Integrity Test",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://kopi-ruang-kita-lime.vercel.app",
+      "type": "string"
+    },
+    {
+      "key": "orderCode",
+      "value": "KRK-177244",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. DevOps & Infrastructure Health",
+      "description": "Pengujian infrastruktur serverless Vercel dan koneksi database pooler Supabase (Singapore).",
+      "item": [
+        {
+          "name": "1.1 System Health & Supabase Pooler Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "health"
+              ]
+            },
+            "description": "Memeriksa status hidup serverless Express di Vercel dan konektivitas live ke PostgreSQL Supabase."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status response 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Server status is OK\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.status).to.eql(\"OK\");",
+                  "});",
+                  "",
+                  "pm.test(\"PostgreSQL Database is CONNECTED\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.database.status).to.eql(\"CONNECTED\");",
+                  "});",
+                  "",
+                  "pm.test(\"Response time dibawah 2000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "1.2 Root API Gateway & CORS Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api"
+              ]
+            },
+            "description": "Memeriksa API Gateway router dan metadata arsitektur proyek."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status response 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Project name valid\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.project).to.eql(\"Kopi Ruang Kita API\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. Database Schema & Tables Verification",
+      "description": "Pengujian keterbacaan skema database (menus, promos, contacts) yang dirancang oleh Orang 1.",
+      "item": [
+        {
+          "name": "2.1 Verifikasi Tabel Menus (12 Menu Seed)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/menus",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "menus"
+              ]
+            },
+            "description": "Memeriksa tabel menus dan query index category."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status response 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Data menu lengkap minimal 12 menu\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data.length).to.be.at.least(12);",
+                  "});",
+                  "",
+                  "pm.test(\"Struktur kolom menu sesuai skema ERD\", function () {",
+                  "    var item = pm.response.json().data[0];",
+                  "    pm.expect(item).to.have.property(\"name\");",
+                  "    pm.expect(item).to.have.property(\"category\");",
+                  "    pm.expect(item).to.have.property(\"price\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "2.2 Verifikasi Tabel Promos (Promo Bundling)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/promos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "promos"
+              ]
+            },
+            "description": "Memeriksa tabel promos."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status response 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Daftar promo aktif tersedia\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data.length).to.be.at.least(3);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "2.3 Verifikasi Penulisan Tabel Contacts (Insert Test)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Penguji DevOps Postman\",\n  \"no_hp\": \"081299887766\",\n  \"pesan\": \"Verifikasi penulisan data ke tabel contacts berhasil via Vercel Serverless.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/contacts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contacts"
+              ]
+            },
+            "description": "Memeriksa kemampuan INSERT tabel contacts di PostgreSQL."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status response 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Pesan berhasil tersimpan di database\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData.data.nama).to.eql(\"Penguji DevOps Postman\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3. Relational Schema & Transaction Test (orders -> order_items)",
+      "description": "Pengujian transaksi ACID dan relasi Foreign Key antar tabel orders dan order_items.",
+      "item": [
+        {
+          "name": "3.1 Transaksi Relasional (orders + order_items)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_name\": \"Dosen / QA Tester\",\n  \"table_number\": \"Meja 09\",\n  \"phone_number\": \"081234567890\",\n  \"payment_method\": \"QRIS\",\n  \"items\": [\n    {\n      \"menu_id\": 1,\n      \"quantity\": 2\n    },\n    {\n      \"menu_id\": 9,\n      \"quantity\": 1\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "description": "Memeriksa eksekusi multi-table INSERT dengan Foreign Key constraint."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status response 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Transaksi berhasil dan kode order terbuat\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData.order).to.have.property(\"order_code\");",
+                  "    pm.collectionVariables.set(\"orderCode\", jsonData.order.order_code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.2 Query Relasional Detail Order (JOIN items)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/{{orderCode}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders",
+                "{{orderCode}}"
+              ]
+            },
+            "description": "Memeriksa integritas query JOIN antara header tabel orders dan detail order_items."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status response 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Data order memuat relasi items yang valid\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData.data.items).to.be.an(\"array\");",
+                  "    pm.expect(jsonData.data.items.length).to.be.at.least(1);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
