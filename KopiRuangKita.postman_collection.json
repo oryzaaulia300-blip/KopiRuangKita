@@ -1,0 +1,479 @@
+{
+  "info": {
+    "_postman_id": "b3c95e92-7d34-4b92-9132-kopiruangkita2026",
+    "name": "Kopi Ruang Kita API",
+    "description": "Koleksi Postman resmi untuk pengujian seluruh REST API Kopi Ruang Kita (Auth, Menus, Orders, Promos, Contacts).\n\nDibuat untuk: Orang 5 (QA & API Testing Lead) dan Tim Pengembang.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://kopi-ruang-kita-lime.vercel.app",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "0. System Health",
+      "item": [
+        {
+          "name": "Health Check (Database & Server)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "health"]
+            },
+            "description": "Mengecek status server dan koneksi PostgreSQL live."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "1. Auth & Security (Orang 2)",
+      "item": [
+        {
+          "name": "Login Staf / Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.token) {",
+                  "    pm.collectionVariables.set('token', response.token);",
+                  "    console.log('JWT Token berhasil disimpan otomatis ke variabel koleksi:', response.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login staf/owner/admin. Token JWT otomatis disimpan ke variabel {{token}}."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Profile Staf Aktif (/me)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Mengambil detail user staf yang sedang login via token JWT."
+          },
+          "response": []
+        },
+        {
+          "name": "Register Staf Baru (Admin/Owner only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"barista_medan\",\n  \"password\": \"password123\",\n  \"full_name\": \"Ahmad Barista\",\n  \"role\": \"staff\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Menambahkan staf kasir/barista baru (memerlukan role admin/owner)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Menus & Promo (Orang 3)",
+      "item": [
+        {
+          "name": "Get All Menus",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/menus",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "menus"]
+            },
+            "description": "Mengambil seluruh daftar menu kopi, non-coffee, dan snack."
+          },
+          "response": []
+        },
+        {
+          "name": "Filter Menus by Category (?category=Coffee)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/menus?category=Coffee",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "menus"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "Coffee"
+                }
+              ]
+            },
+            "description": "Filter menu berdasarkan kategori (Coffee, Non-Coffee, Snack)."
+          },
+          "response": []
+        },
+        {
+          "name": "Search Menu (?search=Aren)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/menus?search=Aren",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "menus"],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Aren"
+                }
+              ]
+            },
+            "description": "Pencarian menu berdasarkan nama atau deskripsi."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Menu (Admin/Owner only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Espresso Tonic\",\n  \"category\": \"Coffee\",\n  \"price\": 22000,\n  \"img\": \"https://images.unsplash.com/photo-1517256064527-09c73fc73e38?q=80&w=687\",\n  \"description\": \"Perpaduan espresso bold dengan tonic water dingin berkarbonasi.\",\n  \"is_available\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/menus",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "menus"]
+            },
+            "description": "Menambahkan item menu baru ke database."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Menu (Admin/Owner only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 19000,\n  \"is_available\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/menus/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "menus", "1"]
+            },
+            "description": "Memperbarui harga atau status menu."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Menu (Admin/Owner only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/menus/13",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "menus", "13"]
+            },
+            "description": "Menghapus menu berdasarkan ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Promos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/promos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "promos"]
+            },
+            "description": "Mengambil penawaran promo bundling aktif."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Orders & Transactions (Orang 4)",
+      "item": [
+        {
+          "name": "Create Order (Checkout Pelanggan)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"Rizky Pratama\",\n  \"tableNumber\": \"Meja 05\",\n  \"phoneNumber\": \"081298765432\",\n  \"paymentMethod\": \"QRIS\",\n  \"paymentProof\": null,\n  \"items\": [\n    {\n      \"id\": 1,\n      \"name\": \"Kopi Susu Gula Aren\",\n      \"price\": 18000,\n      \"quantity\": 2,\n      \"subtotal\": 36000\n    },\n    {\n      \"id\": 10,\n      \"name\": \"Roti Bakar Coklat\",\n      \"price\": 16000,\n      \"quantity\": 1,\n      \"subtotal\": 16000\n    }\n  ],\n  \"subtotal\": 52000,\n  \"tax\": 5200,\n  \"total\": 57200\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders"]
+            },
+            "description": "Membuat order baru dengan SQL Transaction secara aman."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Order by Code (Cek Struk)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/KRK-100001",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders", "KRK-100001"]
+            },
+            "description": "Mengecek detail struk pesanan pelanggan berdasarkan kode order unik."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Orders (Kasir/Staff only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders"]
+            },
+            "description": "Melihat seluruh daftar antrean pesanan masuk."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Order Status (Kasir/Staff only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"COMPLETED\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/1/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders", "1", "status"]
+            },
+            "description": "Mengubah status pesanan (PENDING, PAID, PROCESSING, COMPLETED, CANCELLED)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. Contacts & QA (Orang 5)",
+      "item": [
+        {
+          "name": "Send Contact Message (Formulir Pengunjung)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Siti Nurhaliza\",\n  \"noHp\": \"085277889900\",\n  \"pesan\": \"Kopi Susu Gula Aren-nya enak sekali, apakah ada diskon untuk pemesanan 20 cup meeting kantor?\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/contacts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "contacts"]
+            },
+            "description": "Menyimpan pesan dari form kontak footer website ke PostgreSQL."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Contacts (Staff/Admin only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/contacts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "contacts"]
+            },
+            "description": "Melihat pesan masuk dari pelanggan di dashboard staf."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Sales Summary Report (Orang 5 - QA & Analytics)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/summary",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reports", "summary"]
+            },
+            "description": "Mengambil ringkasan omset total pendapatan, status pesanan, dan menu terlaris."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

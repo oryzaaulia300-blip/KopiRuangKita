@@ -29,3 +29,8 @@ lerna-debug.log*
 Thumbs.db
 .vscode/
 .idea/
+
+# Python & Scratch files
+__pycache__/
+*.py
+*.txt

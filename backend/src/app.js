@@ -11,6 +11,7 @@ import menuRoutes from './routes/menuRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import promoRoutes from './routes/promoRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
+import reportRoutes from './routes/reportRoutes.js';
 import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
 import { pool } from './config/db.js';
 
@@ -117,12 +118,14 @@ app.use('/api/menus', menuRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/promos', promoRoutes);
 app.use('/api/contacts', contactRoutes);
+app.use('/api/reports', reportRoutes);
 
 app.use('/auth', authRoutes);
 app.use('/menus', menuRoutes);
 app.use('/orders', orderRoutes);
 app.use('/promos', promoRoutes);
 app.use('/contacts', contactRoutes);
+app.use('/reports', reportRoutes);
 
 // 6. ERROR HANDLERS
 app.use(notFoundHandler);
