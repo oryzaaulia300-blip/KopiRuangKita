@@ -22,6 +22,7 @@ import LoginModal from './components/LoginModal';
 import PromoModal from './components/PromoModal';
 import OrderModal from './components/OrderModal';
 import ReceiptModal from './components/ReceiptModal';
+import DashboardModal from './components/DashboardModal';
 
 // Backend API Service
 import { api } from './services/api';
@@ -39,6 +40,21 @@ function App() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // State auth & sesi staf
+  const [loginError, setLoginError] = useState('');
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
+  const [staffUser, setStaffUser] = useState(() => {
+    const saved = localStorage.getItem('krk_user');
+    return saved ? JSON.parse(saved) : null;
+  });
+  const [isDashboardOpen, setIsDashboardOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(''), 3000);
+  };
 
   // State order & receipt
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
@@ -77,25 +93,40 @@ function App() {
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
+    setLoginError('');
+
     if (!username || !password) {
-      alert('Username dan Password wajib diisi!');
+      setLoginError('Username dan Password wajib diisi!');
       return;
     }
 
+    setIsLoginLoading(true);
     try {
       const res = await api.login(username, password);
-      alert(`Login berhasil! Selamat datang, ${res.user?.full_name || username}.`);
       if (res.token) {
         localStorage.setItem('krk_token', res.token);
       }
+      const userData = res.user || { username, full_name: username, role: 'staff' };
+      localStorage.setItem('krk_user', JSON.stringify(userData));
+      setStaffUser(userData);
+
       setUsername('');
       setPassword('');
       setIsLoginOpen(false);
+      setIsDashboardOpen(true);
     } catch (err) {
-      // Fallback pesan error atau mode offline
       console.warn('Login API Notice:', err.message);
-      alert(`Login status: ${err.message}`);
+      setLoginError(err.message || 'Username atau password salah.');
+    } finally {
+      setIsLoginLoading(false);
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('krk_token');
+    localStorage.removeItem('krk_user');
+    setStaffUser(null);
+    setIsDashboardOpen(false);
   };
 
   const openPromoModal = (promo) => {
@@ -233,6 +264,9 @@ function App() {
         setIsOrderModalOpen={setIsOrderModalOpen}
         isMobileMenuOpen={isMobileMenuOpen}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
+        staffUser={staffUser}
+        setIsDashboardOpen={setIsDashboardOpen}
+        handleLogout={handleLogout}
       />
 
       {/* Poin 2: Teruskan paymentProof dan setPaymentProof sebagai props */}
@@ -266,13 +300,35 @@ function App() {
 
       <LoginModal
         isLoginOpen={isLoginOpen}
-        setIsLoginOpen={setIsLoginOpen}
+        setIsLoginOpen={(val) => {
+          setIsLoginOpen(val);
+          setLoginError('');
+        }}
         username={username}
         setUsername={setUsername}
         password={password}
         setPassword={setPassword}
         handleLoginSubmit={handleLoginSubmit}
+        loginError={loginError}
+        isLoading={isLoginLoading}
       />
+
+      <DashboardModal
+        isOpen={isDashboardOpen}
+        onClose={() => setIsDashboardOpen(false)}
+        user={staffUser}
+        onLogout={handleLogout}
+        onOpenOrderQueue={() => showToast('Membuka modul Antrean Pesanan & Kasir...')}
+        onOpenManageMenu={() => showToast('Membuka modul Kelola Menu & Ketersediaan...')}
+        onOpenReport={() => showToast('Membuka modul Laporan Omset Penjualan...')}
+      />
+
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-[#4A3728] text-[#FDFBF7] px-5 py-3 rounded-2xl shadow-xl border border-[#765640] text-sm font-medium flex items-center gap-2.5">
+          <span>☕</span>
+          <span>{toastMessage}</span>
+        </div>
+      )}
 
       <main className="flex-grow">
         <PromoModal
