@@ -4,6 +4,9 @@ export const requireAuth = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    console.warn(
+      `[SECURITY WARNING] Percobaan akses tanpa token sah pada ${req.method} ${req.originalUrl} (IP: ${req.ip})`
+    );
     return res.status(401).json({
       success: false,
       message: 'Akses ditolak. Token autentikasi tidak ditemukan.'
@@ -17,6 +20,9 @@ export const requireAuth = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
+    console.warn(
+      `[SECURITY WARNING] Token JWT tidak valid atau kedaluwarsa pada ${req.method} ${req.originalUrl} - Alasan: ${error.message}`
+    );
     return res.status(401).json({
       success: false,
       message: 'Token tidak valid atau telah kedaluwarsa.',
@@ -28,6 +34,9 @@ export const requireAuth = (req, res, next) => {
 export const requireRole = (...allowedRoles) => {
   return (req, res, next) => {
     if (!req.user) {
+      console.warn(
+        `[SECURITY WARNING] Percobaan akses endpoint terproteksi tanpa sesi pengguna pada ${req.method} ${req.originalUrl}`
+      );
       return res.status(401).json({
         success: false,
         message: 'Akses tidak sah. Silakan login terlebih dahulu.'
@@ -35,6 +44,9 @@ export const requireRole = (...allowedRoles) => {
     }
 
     if (!allowedRoles.includes(req.user.role)) {
+      console.warn(
+        `[SECURITY WARNING] Pelanggaran hak akses oleh user '${req.user.username}' (role: ${req.user.role}) pada ${req.method} ${req.originalUrl}`
+      );
       return res.status(403).json({
         success: false,
         message: `Akses ditolak. Peran '${req.user.role}' tidak memiliki izin untuk tindakan ini.`

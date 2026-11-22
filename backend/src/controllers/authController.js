@@ -13,6 +13,14 @@ export const login = async (req, res, next) => {
       });
     }
 
+    // Validasi keamanan panjang password minimal 6 karakter
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password harus terdiri dari minimal 6 karakter.'
+      });
+    }
+
     const userResult = await query(
       'SELECT id, username, password, full_name, role FROM users WHERE username = $1',
       [username.trim()]
@@ -26,6 +34,7 @@ export const login = async (req, res, next) => {
     }
 
     const user = userResult.rows[0];
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
@@ -35,6 +44,7 @@ export const login = async (req, res, next) => {
       });
     }
 
+    // Menyusun payload berisi identitas dan hak akses (role) pengguna.
     const tokenPayload = {
       id: user.id,
       username: user.username,
@@ -42,6 +52,7 @@ export const login = async (req, res, next) => {
       role: user.role
     };
 
+    // Menandatangani payload menggunakan JWT_SECRET dan menetapkan masa berlaku token (expiresIn) agar sesi aman.
     const token = jwt.sign(
       tokenPayload,
       process.env.JWT_SECRET || 'super_secret_jwt_key_default',
@@ -95,6 +106,14 @@ export const register = async (req, res, next) => {
       return res.status(400).json({
         success: false,
         message: 'Username, password, dan nama lengkap wajib diisi.'
+      });
+    }
+
+    // Validasi keamanan panjang password minimal 6 karakter saat pendaftaran
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password harus terdiri dari minimal 6 karakter.'
       });
     }
 
