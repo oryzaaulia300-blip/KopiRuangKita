@@ -49,8 +49,3 @@ npm install
 npm run dev
 ```
 Server backend berjalan di `http://localhost:5000`.
-
-## Pengujian API
-
-File koleksi pengujian endpoint dapat diimpor langsung ke Postman:
-- `KopiRuangKita.postman_collection.json`

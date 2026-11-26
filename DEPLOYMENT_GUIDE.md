@@ -5,7 +5,7 @@
 - **Database**: PostgreSQL di **Supabase** (Region Singapore)
 - **Backend API**: Node.js Express (Serverless on Vercel)
 - **Frontend SPA**: React Vite di **Vercel**
-- **Testing & QA**: **Postman Collection** (`KopiRuangKita.postman_collection.json`)
+- **Testing & QA**: **API Testing** (Health check & endpoint verification)
 
 ---
 
@@ -13,7 +13,7 @@
 1. [Tahap 1: Deploy Database PostgreSQL di Supabase (Singapore)](#tahap-1-deploy-database-postgresql-di-supabase)
 2. [Tahap 2: Eksekusi Skema & Seed Data Database](#tahap-2-eksekusi-skema--seed-data-database)
 3. [Tahap 3: Konfigurasi Connection Pooler (IPv4) & Vercel](#tahap-3-konfigurasi-connection-pooler-ipv4--vercel)
-4. [Tahap 4: Pengujian Route Menggunakan Postman Collection](#tahap-4-pengujian-route-menggunakan-postman-collection)
+4. [Tahap 4: Pengujian Route API](#tahap-4-pengujian-route-api)
 
 ---
 
@@ -57,14 +57,13 @@
 
 ---
 
-## Tahap 4: Pengujian Route Menggunakan Postman Collection
+## Tahap 4: Pengujian Route API
 
-1. Buka aplikasi **Postman**.
-2. Klik tombol **Import** ➔ pilih file `KopiRuangKita.postman_collection.json`.
-3. Seluruh 17 endpoint sudah terstruktur rapi:
-   - `0. System Health`
-   - `1. Auth & Security (Orang 2)`
-   - `2. Menus & Promo (Orang 3)`
-   - `3. Orders & Transactions (Orang 4)`
-   - `4. Contacts & QA (Orang 5)`
-4. Klik tombol **Send** pada rute pengujian untuk memverifikasi alur API secara langsung.
+1. Buka tools pengujian API (seperti Postman atau cURL).
+2. Uji endpoint utama pada deployment:
+   - `GET /api/health`
+   - `POST /api/auth/login`
+   - `GET /api/menus`
+   - `POST /api/orders`
+   - `POST /api/contacts`
+3. Verifikasi response JSON untuk memastikan seluruh alur API berjalan dengan baik.
