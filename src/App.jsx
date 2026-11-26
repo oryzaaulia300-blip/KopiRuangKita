@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './index.css';
 
 // Assets
@@ -23,11 +23,23 @@ import PromoModal from './components/PromoModal';
 import OrderModal from './components/OrderModal';
 import ReceiptModal from './components/ReceiptModal';
 import DashboardModal from './components/DashboardModal';
+import ManageMenuModal from './components/ManageMenuModal';
 
 // Backend API Service
 import { api } from './services/api';
 
+const normalizeMenuItem = (item) => ({
+  ...item,
+  price: Number(item.price) || 0,
+  description: item.description || '',
+  is_available: item.is_available !== undefined ? Boolean(item.is_available) : true,
+});
+
 function App() {
+  // State menu dinamis dari database (fallback ke menuData jika API gagal)
+  const [menus, setMenus] = useState(() => menuData.map(normalizeMenuItem));
+  const [isMenuLoading, setIsMenuLoading] = useState(true);
+
   // State keranjang & filter
   const [cart, setCart] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
@@ -49,6 +61,7 @@ function App() {
     return saved ? JSON.parse(saved) : null;
   });
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
+  const [isManageMenuOpen, setIsManageMenuOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
   const showToast = (msg) => {
@@ -56,16 +69,33 @@ function App() {
     setTimeout(() => setToastMessage(''), 3000);
   };
 
+  // Mengambil data menu dari backend / database Neon
+  const fetchMenus = useCallback(async () => {
+    setIsMenuLoading(true);
+    try {
+      const data = await api.getMenus();
+      if (Array.isArray(data)) {
+        setMenus(data.map(normalizeMenuItem));
+      }
+    } catch (err) {
+      console.warn('[MENU NOTICE] Gagal memuat menu dari backend, pakai data awal:', err.message);
+      setMenus(menuData.map(normalizeMenuItem));
+    } finally {
+      setIsMenuLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchMenus();
+  }, [fetchMenus]);
+
   // State order & receipt
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [customerName, setCustomerName] = useState('');
   const [tableNumber, setTableNumber] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('qris');
-  
-  // Poin 1: Tambahkan state untuk menyimpan bukti pembayaran transfer
   const [paymentProof, setPaymentProof] = useState(null);
-  
   const [receiptData, setReceiptData] = useState(null);
 
   // State form kontak
@@ -73,19 +103,25 @@ function App() {
   const [contactError, setContactError] = useState('');
   const [contactSuccess, setContactSuccess] = useState('');
 
-  // Update qty keranjang
+  // Update qty keranjang (cegah tambah jika menu sedang habis)
   const updateCart = (itemId, change) => {
-    setCart(prev => {
+    const targetMenu = menus.find((m) => m.id === itemId);
+    if (change > 0 && targetMenu && targetMenu.is_available === false) {
+      showToast(`${targetMenu.name} sedang habis.`);
+      return;
+    }
+
+    setCart((prev) => {
       const newCount = (prev[itemId] || 0) + change;
       return { ...prev, [itemId]: newCount < 0 ? 0 : newCount };
     });
   };
 
-  // Filter menu
-  const filteredMenu = menuData.filter(item => {
+  // Filter menu dari state dinamis `menus`
+  const filteredMenu = menus.filter((item) => {
     const matchesSearch =
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.toLowerCase());
+      (item.description || '').toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory =
       activeCategory === 'All' || item.category === activeCategory;
     return matchesSearch && matchesCategory;
@@ -127,6 +163,7 @@ function App() {
     localStorage.removeItem('krk_user');
     setStaffUser(null);
     setIsDashboardOpen(false);
+    setIsManageMenuOpen(false);
   };
 
   const openPromoModal = (promo) => {
@@ -134,13 +171,13 @@ function App() {
     setShowModal(true);
   };
 
-  // Hitung keranjang & total
-  const cartItems = menuData
-    .filter(item => cart[item.id] > 0)
-    .map(item => ({
+  // Hitung keranjang & total dari state dinamis `menus`
+  const cartItems = menus
+    .filter((item) => cart[item.id] > 0)
+    .map((item) => ({
       ...item,
       quantity: cart[item.id],
-      subtotal: item.price * cart[item.id]
+      subtotal: item.price * cart[item.id],
     }));
 
   const subtotalPrice = cartItems.reduce((acc, item) => acc + item.subtotal, 0);
@@ -159,13 +196,10 @@ function App() {
       alert('Nama dan Nomor Meja wajib diisi!');
       return;
     }
-
     if (!phoneNumber.trim()) {
       alert('Nomor WhatsApp wajib diisi!');
       return;
     }
-
-    // Validasi tambahan jika memilih metode transfer tapi belum upload bukti
     if (paymentMethod === 'transfer' && !paymentProof) {
       alert('Silakan upload bukti pembayaran terlebih dahulu!');
       return;
@@ -180,14 +214,13 @@ function App() {
       noMeja: tableNumber,
       noHp: phoneNumber,
       metode: paymentMethod.toUpperCase(),
-      paymentProof: paymentProof, // Menyimpan gambar preview ke struk/log order
+      paymentProof: paymentProof,
       items: [...cartItems],
       subtotal: subtotalPrice,
       pajak: taxPrice,
-      total: grandTotalPrice
+      total: grandTotalPrice,
     };
 
-    // Sinkronisasi pesanan ke Backend PostgreSQL
     try {
       const response = await api.createOrder({
         orderId: generatedCode,
@@ -196,16 +229,16 @@ function App() {
         phoneNumber,
         paymentMethod: paymentMethod.toUpperCase(),
         paymentProof,
-        items: cartItems.map(item => ({
+        items: cartItems.map((item) => ({
           id: item.id,
           name: item.name,
           price: item.price,
           quantity: item.quantity,
-          subtotal: item.subtotal
+          subtotal: item.subtotal,
         })),
         subtotal: subtotalPrice,
         tax: taxPrice,
-        total: grandTotalPrice
+        total: grandTotalPrice,
       });
 
       if (response?.order?.order_code) {
@@ -217,20 +250,16 @@ function App() {
 
     setReceiptData(orderData);
     setIsOrderModalOpen(false);
-    
-    // Reset form & state setelah order selesai
     setCart({});
     setCustomerName('');
     setTableNumber('');
     setPhoneNumber('');
-    
-    // Poin 3: Reset state paymentProof menjadi null
     setPaymentProof(null);
   };
 
   const handleContactChange = (e) => {
     const { name, value } = e.target;
-    setContactForm(prev => ({ ...prev, [name]: value }));
+    setContactForm((prev) => ({ ...prev, [name]: value }));
     setContactError('');
     setContactSuccess('');
   };
@@ -250,7 +279,6 @@ function App() {
       setContactForm({ nama: '', noHp: '', pesan: '' });
     } catch (err) {
       console.warn('[CONTACT NOTICE] Server backend notice:', err.message);
-      // Fallback feedback agar pengalaman pelanggan tetap positif
       setContactSuccess(`Terima kasih ${contactForm.nama}, pesan Anda telah diterima!`);
       setContactError('');
       setContactForm({ nama: '', noHp: '', pesan: '' });
@@ -269,18 +297,17 @@ function App() {
         handleLogout={handleLogout}
       />
 
-      {/* Poin 2: Teruskan paymentProof dan setPaymentProof sebagai props */}
-      <OrderModal 
+      <OrderModal
         isOpen={isOrderModalOpen}
         onClose={() => setIsOrderModalOpen(false)}
-        menuData={menuData}
+        menuData={menus}
         cart={cart}
         updateCart={updateCart}
         customerName={customerName}
         setCustomerName={setCustomerName}
         tableNumber={tableNumber}
         setTableNumber={setTableNumber}
-        phoneNumber={phoneNumber}         
+        phoneNumber={phoneNumber}
         setPhoneNumber={setPhoneNumber}
         paymentProof={paymentProof}
         setPaymentProof={setPaymentProof}
@@ -293,7 +320,7 @@ function App() {
         grandTotalPrice={grandTotalPrice}
       />
 
-      <ReceiptModal 
+      <ReceiptModal
         receiptData={receiptData}
         onClose={() => setReceiptData(null)}
       />
@@ -319,8 +346,19 @@ function App() {
         user={staffUser}
         onLogout={handleLogout}
         onOpenOrderQueue={() => showToast('Membuka modul Antrean Pesanan & Kasir...')}
-        onOpenManageMenu={() => showToast('Membuka modul Kelola Menu & Ketersediaan...')}
+        onOpenManageMenu={() => {
+          setIsDashboardOpen(false);
+          setIsManageMenuOpen(true);
+        }}
         onOpenReport={() => showToast('Membuka modul Laporan Omset Penjualan...')}
+      />
+
+      <ManageMenuModal
+        isOpen={isManageMenuOpen}
+        onClose={() => setIsManageMenuOpen(false)}
+        menus={menus}
+        onMenusUpdated={fetchMenus}
+        showToast={showToast}
       />
 
       {toastMessage && (
@@ -350,6 +388,9 @@ function App() {
           activeCategory={activeCategory}
           setActiveCategory={setActiveCategory}
           filteredMenu={filteredMenu}
+          isLoading={isMenuLoading}
+          updateCart={updateCart}
+          cart={cart}
         />
 
         <CartSection

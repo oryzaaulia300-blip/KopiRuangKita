@@ -14,8 +14,7 @@ export default function DashboardModal({
   const role = (user.role || 'staff').toLowerCase();
 
   // Aturan hak akses tampilan berdasarkan role
-  const canManageMenu = role === 'owner' || role === 'admin';
-  const canViewReport = role === 'owner';
+const canManageMenu = role === 'owner' || role === 'admin' || role === 'staff';  const canViewReport = role === 'owner';
 
   // Warna badge & label deskripsi per role
   const roleConfig = {

@@ -3,6 +3,24 @@
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
+const getAuthToken = () => {
+  return (
+    localStorage.getItem('token') ||
+    localStorage.getItem('authToken') ||
+    localStorage.getItem('krk_token') ||
+    ''
+  );
+};
+
+const getAuthHeaders = (extra = {}) => {
+  const token = getAuthToken();
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...extra,
+  };
+};
+
 const handleResponse = async (response) => {
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
@@ -24,7 +42,7 @@ export const api = {
     const res = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify({ username, password }),
     });
     return handleResponse(res);
   },
@@ -37,12 +55,38 @@ export const api = {
     return handleResponse(res);
   },
 
+  createMenu: async (menuPayload) => {
+    const res = await fetch(`${API_BASE_URL}/menus`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(menuPayload),
+    });
+    return handleResponse(res);
+  },
+
+  updateMenu: async (id, menuPayload) => {
+    const res = await fetch(`${API_BASE_URL}/menus/${id}`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(menuPayload),
+    });
+    return handleResponse(res);
+  },
+
+  deleteMenu: async (id) => {
+    const res = await fetch(`${API_BASE_URL}/menus/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(res);
+  },
+
   // Orders
   createOrder: async (orderPayload) => {
     const res = await fetch(`${API_BASE_URL}/orders`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(orderPayload)
+      body: JSON.stringify(orderPayload),
     });
     return handleResponse(res);
   },
@@ -63,10 +107,10 @@ export const api = {
     const res = await fetch(`${API_BASE_URL}/contacts`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nama, noHp, pesan })
+      body: JSON.stringify({ nama, noHp, pesan }),
     });
     return handleResponse(res);
-  }
+  },
 };
 
 export default api;

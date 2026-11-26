@@ -1,152 +1,146 @@
 import { query } from '../config/db.js';
 
-export const getAllMenus = async (req, res, next) => {
-  try {
-    const { category, search, available } = req.query;
+const VALID_CATEGORIES = ['Coffee', 'Non-Coffee', 'Snack', 'Food', 'Dessert'];
 
-    let sql = 'SELECT * FROM menus WHERE 1=1';
+export const getAllMenus = async (req, res) => {
+  try {
+    const { category, available } = req.query;
+    const conditions = [];
     const params = [];
 
     if (category && category !== 'All') {
       params.push(category);
-      sql += ` AND category = $${params.length}`;
-    }
-
-    if (search) {
-      params.push(`%${search.toLowerCase()}%`);
-      sql += ` AND (LOWER(name) LIKE $${params.length} OR LOWER(description) LIKE $${params.length})`;
+      conditions.push(`category = $${params.length}`);
     }
 
     if (available !== undefined) {
       params.push(available === 'true');
-      sql += ` AND is_available = $${params.length}`;
+      conditions.push(`is_available = $${params.length}`);
     }
 
-    sql += ' ORDER BY category ASC, id ASC';
+    let sql = 'SELECT * FROM menus';
+    if (conditions.length > 0) {
+      sql += ' WHERE ' + conditions.join(' AND ');
+    }
+    sql += ' ORDER BY id ASC';
 
     const result = await query(sql, params);
-
-    res.json({
-      success: true,
-      count: result.rows.length,
-      data: result.rows
-    });
+    return res.status(200).json(result.rows);
   } catch (error) {
-    next(error);
+    console.error('[getAllMenus error]:', error);
+    return res.status(500).json({ message: 'Gagal mengambil data menu' });
   }
 };
 
-export const getMenuById = async (req, res, next) => {
+export const getMenuById = async (req, res) => {
   try {
     const { id } = req.params;
     const result = await query('SELECT * FROM menus WHERE id = $1', [id]);
 
     if (result.rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: `Menu dengan ID ${id} tidak ditemukan.`
-      });
+      return res.status(404).json({ message: 'Menu tidak ditemukan' });
     }
 
-    res.json({
-      success: true,
-      data: result.rows[0]
-    });
+    return res.status(200).json(result.rows[0]);
   } catch (error) {
-    next(error);
+    console.error('[getMenuById error]:', error);
+    return res.status(500).json({ message: 'Gagal mengambil detail menu' });
   }
 };
 
-export const createMenu = async (req, res, next) => {
+export const createMenu = async (req, res) => {
   try {
-    const { name, category, price, img, description, is_available = true } = req.body;
+    const {
+      name,
+      category,
+      price,
+      img = null,
+      description = null,
+      is_available = true,
+    } = req.body;
 
-    if (!name || !category || price === undefined) {
-      return res.status(400).json({
-        success: false,
-        message: 'Nama menu, kategori, dan harga wajib diisi.'
-      });
+    if (!name || !category || price === undefined || price === null) {
+      return res.status(400).json({ message: 'Nama, kategori, dan harga wajib diisi' });
+    }
+
+    if (!VALID_CATEGORIES.includes(category)) {
+      return res.status(400).json({ message: 'Kategori menu tidak valid' });
+    }
+
+    const numericPrice = Number(price);
+    if (Number.isNaN(numericPrice) || numericPrice < 0) {
+      return res.status(400).json({ message: 'Harga harus berupa angka >= 0' });
     }
 
     const result = await query(
       `INSERT INTO menus (name, category, price, img, description, is_available)
        VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING *`,
-      [name.trim(), category, parseFloat(price), img, description, is_available]
+      [name.trim(), category, numericPrice, img, description, Boolean(is_available)]
     );
 
-    res.status(201).json({
-      success: true,
-      message: 'Menu berhasil ditambahkan.',
-      data: result.rows[0]
-    });
+    return res.status(201).json(result.rows[0]);
   } catch (error) {
-    next(error);
+    console.error('[createMenu error]:', error);
+    return res.status(500).json({ message: 'Gagal menambah menu baru' });
   }
 };
 
-export const updateMenu = async (req, res, next) => {
+export const updateMenu = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, category, price, img, description, is_available } = req.body;
+    const existingRes = await query('SELECT * FROM menus WHERE id = $1', [id]);
 
-    const existing = await query('SELECT id FROM menus WHERE id = $1', [id]);
-    if (existing.rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: `Menu dengan ID ${id} tidak ditemukan.`
-      });
+    if (existingRes.rows.length === 0) {
+      return res.status(404).json({ message: 'Menu tidak ditemukan' });
+    }
+
+    const current = existingRes.rows[0];
+    const name = req.body.name !== undefined ? String(req.body.name).trim() : current.name;
+    const category = req.body.category !== undefined ? req.body.category : current.category;
+    const price = req.body.price !== undefined ? Number(req.body.price) : Number(current.price);
+    const img = req.body.img !== undefined ? req.body.img : current.img;
+    const description = req.body.description !== undefined ? req.body.description : current.description;
+    const is_available =
+      req.body.is_available !== undefined ? Boolean(req.body.is_available) : current.is_available;
+
+    if (!name || !VALID_CATEGORIES.includes(category) || Number.isNaN(price) || price < 0) {
+      return res.status(400).json({ message: 'Data perubahan menu tidak valid' });
     }
 
     const result = await query(
       `UPDATE menus
-       SET name = COALESCE($1, name),
-           category = COALESCE($2, category),
-           price = COALESCE($3, price),
-           img = COALESCE($4, img),
-           description = COALESCE($5, description),
-           is_available = COALESCE($6, is_available)
+       SET name = $1,
+           category = $2,
+           price = $3,
+           img = $4,
+           description = $5,
+           is_available = $6,
+           updated_at = CURRENT_TIMESTAMP
        WHERE id = $7
        RETURNING *`,
-      [
-        name ? name.trim() : null,
-        category || null,
-        price !== undefined ? parseFloat(price) : null,
-        img || null,
-        description || null,
-        is_available !== undefined ? is_available : null,
-        id
-      ]
+      [name, category, price, img, description, is_available, id]
     );
 
-    res.json({
-      success: true,
-      message: 'Menu berhasil diperbarui.',
-      data: result.rows[0]
-    });
+    return res.status(200).json(result.rows[0]);
   } catch (error) {
-    next(error);
+    console.error('[updateMenu error]:', error);
+    return res.status(500).json({ message: 'Gagal memperbarui menu' });
   }
 };
 
-export const deleteMenu = async (req, res, next) => {
+export const deleteMenu = async (req, res) => {
   try {
     const { id } = req.params;
-
-    const result = await query('DELETE FROM menus WHERE id = $1 RETURNING id, name', [id]);
+    const result = await query('DELETE FROM menus WHERE id = $1 RETURNING *', [id]);
 
     if (result.rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: `Menu dengan ID ${id} tidak ditemukan.`
-      });
+      return res.status(404).json({ message: 'Menu tidak ditemukan' });
     }
 
-    res.json({
-      success: true,
-      message: `Menu '${result.rows[0].name}' berhasil dihapus.`
-    });
+    return res.status(200).json({ message: 'Menu berhasil dihapus', deleted: result.rows[0] });
   } catch (error) {
-    next(error);
+    console.error('[deleteMenu error]:', error);
+    return res.status(500).json({ message: 'Gagal menghapus menu' });
   }
 };
